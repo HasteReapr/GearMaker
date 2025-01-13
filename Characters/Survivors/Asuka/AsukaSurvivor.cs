@@ -160,11 +160,11 @@ namespace AsukaMod.Survivors.Asuka
             Skills.ClearGenericSkills(bodyPrefab);
             //add our own
             //AddPassiveSkill();
+            InitializeSpells();
             AddPrimarySkills();
             AddSecondarySkills();
             AddUtiitySkills();
             AddSpecialSkills();
-            InitializeSpells();
         }
 
         //skip if you don't have a passive
@@ -356,10 +356,6 @@ namespace AsukaMod.Survivors.Asuka
             //Create new SkillFamily
             var spellSkillFamily = ScriptableObject.CreateInstance<SkillFamily>();
 
-            //IMPORTANT! Do not forget to add name for SkillFamily 
-            //because game uses it for saving loadout
-            //Also I recomend to follow naming convention "{PrefabName}{SkillSlot}Family";
-
             //Adding skill variants to the family
             (spellSkillFamily as ScriptableObject).name = bodyPrefab.name + "Spell" + "Family";
             spellSkillFamily.variants = new SkillFamily.Variant[0];
@@ -367,15 +363,26 @@ namespace AsukaMod.Survivors.Asuka
             Content.AddSkillFamily(spellSkillFamily);
 
             //Adding new GenericSkill component to character prefab
-            GenericSkill SpellGenericSkill = bodyPrefab.AddComponent<GenericSkill>();
-            SpellGenericSkill.name = "Spells";
-            SpellGenericSkill._skillFamily = spellSkillFamily;
-            SpellGenericSkill.hideInCharacterSelect = true;
+            var SpellGenericSkillA = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillA._skillFamily = spellSkillFamily;
+            SpellGenericSkillA.hideInCharacterSelect = true;
 
-            exSkillLoc.extraFirst = SpellGenericSkill;
-            exSkillLoc.extraSecond = SpellGenericSkill;
-            exSkillLoc.extraThird = SpellGenericSkill;
-            exSkillLoc.extraFourth = SpellGenericSkill;
+            var SpellGenericSkillB = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillB._skillFamily = spellSkillFamily;
+            SpellGenericSkillB.hideInCharacterSelect = true;
+
+            var SpellGenericSkillC = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillC._skillFamily = spellSkillFamily;
+            SpellGenericSkillC.hideInCharacterSelect = true;
+
+            var SpellGenericSkillD = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillD._skillFamily = spellSkillFamily;
+            SpellGenericSkillD.hideInCharacterSelect = true;
+
+            exSkillLoc.extraFirst = SpellGenericSkillA;
+            exSkillLoc.extraSecond = SpellGenericSkillB;
+            exSkillLoc.extraThird = SpellGenericSkillC;
+            exSkillLoc.extraFourth = SpellGenericSkillD;
 
             emptySpell = Skills.CreateSkillDef(new SkillDefInfo
             {
@@ -390,7 +397,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 5f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -415,7 +422,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("HowlingMetron", howlingMetron);
-
             SkillDef delayedHowling = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "DelayedHowlingMetron",
@@ -434,7 +440,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("DelayedHowlingMetron", delayedHowling);
-
             SkillDef delayedTardusMetron = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "DelayedTardusMetron",
@@ -453,7 +458,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("DelayedTardusMetron", delayedTardusMetron);
-
             SkillDef howlingMSProcess = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "HowlingMetronMSProcess",
@@ -472,7 +476,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("HowlingMSProcess", howlingMSProcess);
-
             SkillDef arpeggioMetron = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "MetronArpeggio",
@@ -491,7 +494,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("MetronArpeggio", arpeggioMetron);
-
             SkillDef bitShiftMetron = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "BitShiftMetron",
@@ -511,7 +513,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("BitShiftMetron", bitShiftMetron);
-
             SkillDef goToMarker = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "goToMarker",
@@ -549,7 +550,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("ReduceManaCost", reduceMana);
-
             SkillDef regenMana = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "regenMana",
@@ -568,7 +568,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("RegenMana", regenMana);
-
             SkillDef recoverMana = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "SpellRecoverMana",
@@ -606,7 +605,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("BookmarkAuto", bookmarkAuto);
-
             SkillDef bookmarkRand = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "BookmarkRandom",
@@ -625,7 +623,6 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("BookmarkRandom", bookmarkRand);
-
             SkillDef bookmarkFull = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "SpellRecoverMana",
@@ -647,21 +644,25 @@ namespace AsukaMod.Survivors.Asuka
 
             Skills.AddSkillToFamily(spellSkillFamily, emptySpell);
 
-            Skills.AddSkillToFamily(spellSkillFamily, howlingMetron);
-            Skills.AddSkillToFamily(spellSkillFamily, delayedHowling);
-            Skills.AddSkillToFamily(spellSkillFamily, howlingMSProcess);
-            Skills.AddSkillToFamily(spellSkillFamily, delayedTardusMetron);
-            Skills.AddSkillToFamily(spellSkillFamily, arpeggioMetron);
-            Skills.AddSkillToFamily(spellSkillFamily, bitShiftMetron);
-            Skills.AddSkillToFamily(spellSkillFamily, goToMarker);
 
-            Skills.AddSkillToFamily(spellSkillFamily, reduceMana);
-            Skills.AddSkillToFamily(spellSkillFamily, recoverMana);
-            Skills.AddSkillToFamily(spellSkillFamily, regenMana);
+            GenericSkill passiveGenericSkill = Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, emptySpell);
 
-            Skills.AddSkillToFamily(spellSkillFamily, bookmarkFull);
-            Skills.AddSkillToFamily(spellSkillFamily, bookmarkRand);
-            Skills.AddSkillToFamily(spellSkillFamily, bookmarkAuto);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, howlingMetron);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, delayedHowling);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, howlingMSProcess);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, delayedTardusMetron);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, arpeggioMetron);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bitShiftMetron);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, goToMarker);
+
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, reduceMana);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, recoverMana);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, regenMana);
+
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bookmarkFull);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bookmarkRand);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bookmarkAuto);
         }
         #endregion skills
 

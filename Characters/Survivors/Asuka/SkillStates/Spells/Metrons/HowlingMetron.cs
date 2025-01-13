@@ -7,7 +7,7 @@ using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class HowlingMetron : BaseSkillState
+    internal class HowlingMetron : BaseSpellState
     {
         private Ray aimRay;
         public float baseDuration = 0.39f;
@@ -19,17 +19,22 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override void OnEnter()
         {
+            //Set our mana cost before we call base.OnEnter so if the mana cost is more than our current mana, we go into the failed cast state.
+            ManaCost = 8;
             base.OnEnter();
-            aimRay = GetAimRay();
-            hasFired = false;
-            fireTime = 0.11f / attackSpeedStat;
-            duration = baseDuration / attackSpeedStat;
+            //Check to make sure our cast didn't fail. If it did we aren't able to do anything.
+            if (!CastFailed)
+            {
+                aimRay = GetAimRay();
+                hasFired = false;
+                fireTime = 0.11f / attackSpeedStat;
+                duration = baseDuration / attackSpeedStat;
+            }
         }
 
         public override void OnExit()
         {
             base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
         }
 
         private void Fire()
@@ -57,12 +62,15 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             base.FixedUpdate();
 
-            if(fixedAge >= fireTime && !hasFired)
+            if (CastFailed)
+                return; //If we failed to cast we just exit out of FixedUpdate();
+
+            if (fixedAge >= fireTime && !hasFired)
             {
                 Fire();
             }
 
-            if(fixedAge >= duration && hasFired)
+            if (fixedAge >= duration && hasFired)
             {
                 outer.SetNextStateToMain();
                 return;

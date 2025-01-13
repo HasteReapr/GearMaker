@@ -1,5 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using BepInEx.Configuration;
+using RiskOfOptions;
+using RiskOfOptions.Options;
 using UnityEngine;
 
 namespace AsukaMod.Modules
@@ -7,6 +9,11 @@ namespace AsukaMod.Modules
     public static class Config
     {
         public static ConfigFile MyConfig = AsukaPlugin.instance.Config;
+
+        public static ConfigEntry<KeyboardShortcut> punchSpellTrigger;
+        public static ConfigEntry<KeyboardShortcut> kickSpellTrigger;
+        public static ConfigEntry<KeyboardShortcut> slashSpellTrigger;
+        public static ConfigEntry<KeyboardShortcut> heavySpellTrigger;
 
         /// <summary>
         /// automatically makes config entries for disabling survivors
@@ -49,6 +56,31 @@ namespace AsukaMod.Modules
                 //TryRegisterOption(configEntry, min, max, restartRequired);
             }
 
+            punchSpellTrigger = AsukaPlugin.instance.Config.Bind<KeyboardShortcut>
+            (
+                new ConfigDefinition("Spell Activation Controls", "Spell Slot Punch Input"),
+                new KeyboardShortcut(UnityEngine.KeyCode.Alpha1),
+                new ConfigDescription("Key to trigger the first spell slot.", null, System.Array.Empty<object>())
+            );
+            kickSpellTrigger = AsukaPlugin.instance.Config.Bind<KeyboardShortcut>
+            (
+                new ConfigDefinition("Spell Activation Controls", "Spell Slot Kick Input"),
+                new KeyboardShortcut(UnityEngine.KeyCode.Alpha2),
+                new ConfigDescription("Key to trigger the second spell slot.", null, System.Array.Empty<object>())
+            );
+            slashSpellTrigger = AsukaPlugin.instance.Config.Bind<KeyboardShortcut>
+            (
+                new ConfigDefinition("Spell Activation Controls", "Spell Slot Slash Input"),
+                new KeyboardShortcut(UnityEngine.KeyCode.Alpha3),
+                new ConfigDescription("Key to trigger the third spell slot.", null, System.Array.Empty<object>())
+            );
+            heavySpellTrigger = AsukaPlugin.instance.Config.Bind<KeyboardShortcut>
+            (
+                new ConfigDefinition("Spell Activation Controls", "Spell Slot Heavy Slash Input"),
+                new KeyboardShortcut(UnityEngine.KeyCode.Alpha4),
+                new ConfigDescription("Key to trigger the fourth spell slot.", null, System.Array.Empty<object>())
+            );
+
             return configEntry;
         }
 
@@ -60,22 +92,10 @@ namespace AsukaMod.Modules
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static void TryRegisterOption<T>(ConfigEntry<T> entry, float min, float max, bool restartRequired)
         {
-            //if (entry is ConfigEntry<float>)
-            //{
-            //    ModSettingsManager.AddOption(new SliderOption(entry as ConfigEntry<float>, new SliderConfig() { min = min, max = max, formatString = "{0:0.00}", restartRequired = restartRequired }));
-            //}
-            //if (entry is ConfigEntry<int>)
-            //{
-            //    ModSettingsManager.AddOption(new IntSliderOption(entry as ConfigEntry<int>, new IntSliderConfig() { min = (int)min, max = (int)max, restartRequired = restartRequired }));
-            //}
-            //if (entry is ConfigEntry<bool>)
-            //{
-            //    ModSettingsManager.AddOption(new CheckBoxOption(entry as ConfigEntry<bool>, restartRequired));
-            //}
-            //if (entry is BepInEx.Configuration.ConfigEntry<KeyboardShortcut>)
-            //{
-            //    ModSettingsManager.AddOption(new KeyBindOption(entry as ConfigEntry<KeyboardShortcut>, restartRequired));
-            //}
+            ModSettingsManager.AddOption(new KeyBindOption(punchSpellTrigger));
+            ModSettingsManager.AddOption(new KeyBindOption(kickSpellTrigger));
+            ModSettingsManager.AddOption(new KeyBindOption(slashSpellTrigger));
+            ModSettingsManager.AddOption(new KeyBindOption(heavySpellTrigger));
         }
 
         //Taken from https://github.com/ToastedOven/CustomEmotesAPI/blob/main/CustomEmotesAPI/CustomEmotesAPI/CustomEmotesAPI.cs

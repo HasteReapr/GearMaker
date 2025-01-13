@@ -17,28 +17,42 @@ namespace AsukaMod.Survivors.Asuka.Components
     //Huge thanks to the folks over at the Starstorm 2 Team, especially Swuff for reaching out and providing the Nemesis Captain stuff to use as reference here.
     //https://github.com/TeamMoonstorm/Starstorm2/blob/main/SS2-Project/Assets/Starstorm2/Components/NemCaptain/NemCaptainController.cs
 
+    //Took a look at Lee Hyperreal for a better way to do a lot of this
+    //https://github.com/Popcorn-Factory/lee-hyperreal-ror2/blob/d9fa573940e9c8d4276a363f3fedc75683c49a07/LeeHyperrealMod/Content/Controllers/OrbController.cs
+
     public class AsukaManaComponent : NetworkBehaviour
     {
         //Cached on wakeup
-        public CharacterBody charBody;
-        public Animator charAnim;
-        public ExtraSkillLocator exSkillLoc;
+        CharacterBody charBody;
+        CharacterMaster charMaster;
+        EntityStateMachine[] stateMachines;
+        ExtraSkillLocator exSkillLoc;
 
-        //Spell Skills & stuff
-        public SkillFamily deck;
-        public SkillDef emptySpell;
+        public bool isExecutingSkill = false;
+        public bool isCheckingInput = false;
+
+        public float isCheckingInputTimer = 0f;
+        public float isExecutingInputTimer = 0f;
+
+        internal enum HandNum : ushort
+        {
+            PUNCH = 0,
+            KICK = 1,
+            SLASH = 2,
+            HEAVY = 3
+        }
 
         //Decks, these get initialized in a minute.
+        public SkillDef emptySpell = AsukaSurvivor.emptySpell;
+
         public int SelectedDeck = 0; //0 deckA 1 deckB 2 deckC
-        public SkillFamily deckA;
+        //public SkillFamily deckA;
+        private List<BaseSpell> deckA;
         private List<int> drawnSkillIndiciesA = new List<int>();
         public SkillFamily deckB;
         private List<int> drawnSkillIndiciesB = new List<int>();
         public SkillFamily deckC;
         private List<int> drawnSkillIndiciesC = new List<int>();
-
-        private SkillFamily[] decks = new SkillFamily[3];
-        private List<int>[] deckDrawIndex = new List<int>[3];
 
         private bool initialDeck = true;
         
@@ -139,46 +153,31 @@ namespace AsukaMod.Survivors.Asuka.Components
             this.Network_Mana = Mathf.Clamp(this.mana + amount, 0, maxMana);
         }
 
-        //finally we get into the meat of this component lol
-        private void OnEnable()
+        public void Start()
         {
-            charBody = base.gameObject.GetComponent<CharacterBody>();
-            charAnim = base.gameObject.GetComponent<Animator>();
-            exSkillLoc = base.gameObject.GetComponent<ExtraSkillLocator>();
+            charBody = gameObject.GetComponent<CharacterBody>();
+            exSkillLoc = gameObject.GetComponent<ExtraSkillLocator>();
+            stateMachines = gameObject.GetComponents<EntityStateMachine>();
 
-            /*            //add prefab & necessary hooks
-            OverlayCreationParams manaOverlayCreationParams = new OverlayCreationParams
-            {
-                prefab = manaOverlayPrefab,
-                childLocatorEntry = manaOverlayChildLocatorEntry
-            };
-            manaOverlayController = HudOverlayManager.AddOverlay(gameObject, manaOverlayCreationParams);
-            manaOverlayController.onInstanceAdded += OnManaOverlayInstanceAdded;
-            manaOverlayController.onInstanceRemove += OnManaOverlayInstanceRemoved;
+            charMaster = charBody.master;
+        }
 
-            OverlayCreationParams cardOverlayCreationParams = new OverlayCreationParams
-            {
-                prefab = cardOverlayPrefab,
-                childLocatorEntry = cardOverlayChildLocatorEntry
-            };
-            cardOverlayController = HudOverlayManager.AddOverlay(gameObject, cardOverlayCreationParams);
-            cardOverlayController.onInstanceAdded += OnCardOverlayInstanceAdded;
-            cardOverlayController.onInstanceRemove += OnCardOverlayInstanceRemoved;*/
-
+        //finally we get into the meat of this component lol
+        public void OnEnable()
+        {
             //Check for a character body
             if (charBody != null)
             {
                 if (NetworkServer.active)
                 {
                     HealthComponent.onCharacterHealServer += HealthComponent_onCharacterHealServer;
+                    
                 }
                 //Populate and setup the decks in the arrays first, for easier tracking.
                 //Initialize();
                 //This method is more versatile than StarStorm's version, as it allows you to choose which deck is used.
 
-                // We initialize the decks, each one being it's own unique skill family.
-                //TODO Actually figure out how to use skill families, this is gonna end up being a kind of jumbled messs I think
-                InitDecks();
+                PopulateDecks();
                 
                 //We give Asuka the defense buff when we spawn in. This buff gets removed when you run out of mana.
                 charBody.AddBuff(AsukaBuffs.manaDefBuff);
@@ -187,23 +186,73 @@ namespace AsukaMod.Survivors.Asuka.Components
             }
         }
 
-        private void FixedUpdate()
+        public void Update()
+        {
+            if(charBody.hasEffectiveAuthority && !PauseManager.isPaused)
+            {
+                if (isCheckingInput)
+                {
+                    isCheckingInputTimer += Time.deltaTime;
+                    if (isCheckingInputTimer >= 3f)
+                    {
+                        isCheckingInput = false;
+                        isCheckingInputTimer = 0f;
+                    }
+                }
+                if (!isCheckingInput)
+                {
+                    isCheckingInputTimer = 0f;
+                }
+                if (isExecutingSkill)
+                {
+                    isExecutingInputTimer += Time.deltaTime;
+                    if (isExecutingInputTimer >= 3f)
+                    {
+                        isExecutingSkill = false;
+                        isExecutingInputTimer = 0f;
+                    }
+                }
+                if (!isExecutingSkill)
+                {
+                    isExecutingInputTimer = 0f;
+                }
+            }
+        }
+
+        private bool CheckSimpleInput()
+        {
+            bool triggeredSomething = false;
+            if (UnityEngine.Input.GetKeyDown(Config.punchSpellTrigger.Value.MainKey))
+            {
+                
+                triggeredSomething = true;
+            }
+            else if (UnityEngine.Input.GetKeyDown(Config.kickSpellTrigger.Value.MainKey))
+            {
+                
+                triggeredSomething = true;
+            }
+            else if (UnityEngine.Input.GetKeyDown(Config.slashSpellTrigger.Value.MainKey))
+            {
+                
+                triggeredSomething = true;
+            }
+            else if (UnityEngine.Input.GetKeyDown(Config.heavySpellTrigger.Value.MainKey))
+            {
+                
+                triggeredSomething = true;
+            }
+            
+            return triggeredSomething;
+        }
+
+        public void FixedUpdate()
         {
             if (charBody.HasBuff(AsukaBuffs.manaRegenCont))
             {
                 AddMana(mpsRecoverContinous);
             }
         }
-
-        /*private void Initialize()
-        {
-            decks[0] = deckA;
-            decks[1] = deckB;
-            decks[2] = deckC;
-            deckDrawIndex[0] = drawnSkillIndiciesA;
-            deckDrawIndex[1] = drawnSkillIndiciesB;
-            deckDrawIndex[2] = drawnSkillIndiciesC;
-        }*/
 
         private void InitHand()
         {
@@ -220,7 +269,7 @@ namespace AsukaMod.Survivors.Asuka.Components
         private void DrawFullHand()
         {
             //Draw a card in each hand.
-            exSkillLoc.extraFirst.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
+            /*exSkillLoc.extraFirst.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
             if (exSkillLoc.extraFirst.skillDef == emptySpell)
                 exSkillLoc.extraFirst.UnsetSkillOverride(gameObject, exSkillLoc.extraFirst.skillDef, GenericSkill.SkillOverridePriority.Replacement);
 
@@ -234,14 +283,16 @@ namespace AsukaMod.Survivors.Asuka.Components
 
             exSkillLoc.extraFourth.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
             if (exSkillLoc.extraFourth.skillDef == emptySpell)
-                exSkillLoc.extraFourth.UnsetSkillOverride(gameObject, exSkillLoc.extraFourth.skillDef, GenericSkill.SkillOverridePriority.Replacement);
+                exSkillLoc.extraFourth.UnsetSkillOverride(gameObject, exSkillLoc.extraFourth.skillDef, GenericSkill.SkillOverridePriority.Replacement);*/
+
+            
         }
 
         //Bookmark grab
         public SkillDef DrawFromDeck(int deckNum)
         {
             //Check if the deck has been fully used.
-            if (GetDrawCountByIndex(deckNum).Count == GetDeckByIndex(deckNum).variants.Length)
+            if (GetDrawCountByIndex(deckNum).Count == GetDeckByIndex(deckNum).Count)
             {
                 GetDrawCountByIndex(deckNum).Clear();
             }
@@ -250,14 +301,14 @@ namespace AsukaMod.Survivors.Asuka.Components
             int randomVarInd;
             do
             {
-                randomVarInd = Random.Range(0, GetDeckByIndex(deckNum).variants.Length);
+                randomVarInd = Random.Range(0, GetDeckByIndex(deckNum).Count);
             }
             while (GetDrawCountByIndex(deckNum).Contains(randomVarInd));
 
             //Mark the spell as used.
             GetDrawCountByIndex(deckNum).Add(randomVarInd);
 
-            return GetDeckByIndex(deckNum).variants[randomVarInd].skillDef;
+            return GetDeckByIndex(deckNum)[randomVarInd];
         }
 
         //Bookmark remove
@@ -289,7 +340,7 @@ namespace AsukaMod.Survivors.Asuka.Components
             }
         }
 
-        private SkillFamily GetDeckByIndex(int deckIndex)
+        /*private SkillFamily GetDeckByIndex(int deckIndex)
         {
             switch (deckIndex)
             {
@@ -299,6 +350,21 @@ namespace AsukaMod.Survivors.Asuka.Components
                     return deckB;
                 case 2:
                     return deckC;
+                default:
+                    return null;
+            }
+        }*/
+
+        private List<BaseSpell> GetDeckByIndex(int deckIndex)
+        {
+            switch (deckIndex)
+            {
+                case 0:
+                    return deckA;
+                case 1:
+                    return deckA;
+                case 2:
+                    return deckA;
                 default:
                     return null;
             }
@@ -325,278 +391,20 @@ namespace AsukaMod.Survivors.Asuka.Components
         }
 
         //Here at the very bottom we fill out all of the decks with our cards
-        public void InitDecks()
+        private void PopulateDecks()
         {
-            BaseSpell GoToMarker = new BaseSpell
-            {
-                skillName = "GoToMarker",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_GO_TO_MARKER",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 8,
+            deckA = new List<BaseSpell>();
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(GoToMarker)),
-                activationStateMachineName = "Body",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant MarkerVar = new SkillFamily.Variant();
-            MarkerVar.skillDef = GoToMarker;
-
-            BaseSpell ReduceManaCost = new BaseSpell
-            {
-                skillName = "ReduceManaCost",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_REDUCE_MANA_COST",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 6,
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(ReduceManaCost)),
-                activationStateMachineName = "Weapon",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant ReduceManaVar = new SkillFamily.Variant();
-            ReduceManaVar.skillDef = ReduceManaCost;
-
-            BaseSpell RegenManaCont = new BaseSpell
-            {
-                skillName = "RegenManaContinuous",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_REGEN_MANA_CONTINUOUS",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 8,
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(ManaRegenCont)),
-                activationStateMachineName = "Weapon",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant RegenContVar = new SkillFamily.Variant();
-            RegenContVar.skillDef = RegenManaCont;
-
-            BaseSpell RegenManaInstant = new BaseSpell
-            {
-                skillName = "RegenManaInstant",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_REGEN_MANA_INSTANT",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 8,
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(ManaRegenInstant)),
-                activationStateMachineName = "Weapon",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant InstantManaVar = new SkillFamily.Variant();
-            InstantManaVar.skillDef = RegenManaInstant;
-
-            BaseSpell HowlingMetron = new BaseSpell
-            {
-                skillName = "HowlingMetron",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_HOWLING_METRON",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 8,
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(HowlingMetron)),
-                activationStateMachineName = "Weapon",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant HowlingMetVar = new SkillFamily.Variant();
-            HowlingMetVar.skillDef = HowlingMetron;
-
-            BaseSpell DelayedHowlingMetron = new BaseSpell
-            {
-                skillName = "DelayedHowlingMetron",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_DELAYED_HOWLING_METRON",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 12,
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(DelayedHowlingMetron)),
-                activationStateMachineName = "Weapon",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant DelHowlMetVar = new SkillFamily.Variant();
-            DelHowlMetVar.skillDef = DelayedHowlingMetron;
-
-            BaseSpell HowlingMetronProcess = new BaseSpell
-            {
-                skillName = "HowlingMetronMSProcessing",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_HOWLING_METRON_MS_PROCESS",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 16,
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(HowlingMSProcess)),
-                activationStateMachineName = "Weapon",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant MetronProcessVar = new SkillFamily.Variant();
-            MetronProcessVar.skillDef = HowlingMetronProcess;
-
-            BaseSpell DelayedTardusMetron = new BaseSpell
-            {
-                skillName = "DelayedTardusMetron",
-                skillNameToken = AsukaSurvivor.Asuka_PREFIX + "SPELL_DELAYED_TARDUS_METRON",
-                //icon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                manaCost = 12,
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(DelayedTardusMetron)),
-                activationStateMachineName = "Weapon",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 0f,
-                baseMaxStock = 1,
-
-                rechargeStock = 0,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = false,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = true,
-                cancelSprintingOnActivation = true,
-                forceSprintDuringState = false,
-            };
-            SkillFamily.Variant TardusVar = new SkillFamily.Variant();
-            TardusVar.skillDef = DelayedTardusMetron;
-
-            deckA = new SkillFamily();
-            SkillFamily.Variant[] deckACards = { 
-                ReduceManaVar, ReduceManaVar, 
-                HowlingMetVar, HowlingMetVar, HowlingMetVar, HowlingMetVar, HowlingMetVar, HowlingMetVar, 
-                DelHowlMetVar, DelHowlMetVar, DelHowlMetVar, DelHowlMetVar, DelHowlMetVar,
-                MetronProcessVar, MetronProcessVar, MetronProcessVar, MetronProcessVar, MetronProcessVar,
-            };
-            deckA.variants = deckACards;
-
-            deckB = new SkillFamily();
-            SkillFamily.Variant[] deckBCards =
-            {
-
-            };
+            for(int i = 0; i < 2; i++)
+                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("ReduceManaCost"));
+            for(int i = 0; i < 6; i++)
+                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("HowlingMetron"));
+            for(int i = 0; i < 5; i++)
+                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("DelayedHowlingMetron"));
+            for(int i = 0; i < 5; i++)
+                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("HowlingMetronMSProcessing"));
+            //for(int i = 0; i < 5; i++)
+            //    deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("HowlingMetron"));
         }
     }
 }

@@ -14,7 +14,7 @@ namespace AsukaMod.Survivors.Asuka
         {
             manaDefBuff = Modules.Content.CreateAndAddBuff("AsukaArmorBuff",
                 LegacyResourcesAPI.Load<BuffDef>("BuffDefs/HiddenInvincibility").iconSprite,
-                Color.white,
+                Color.blue,
                 false,
                 false);
 

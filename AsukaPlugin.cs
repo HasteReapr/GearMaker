@@ -46,21 +46,23 @@ namespace AsukaMod
 
             // make a content pack and add it. this has to be last
             new Modules.ContentPacks().Initialize();
+
+            Hook();
         }
 
         private void Hook()
         {
-            On.RoR2.CharacterBody.OnTakeDamageServer += CharacterBody_OnTakeDamageServer;
+            On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
         }
 
-        private void CharacterBody_OnTakeDamageServer(On.RoR2.CharacterBody.orig_OnTakeDamageServer orig, CharacterBody self, DamageReport damageReport)
+        private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if (self.HasBuff(AsukaBuffs.manaDefBuff))
+            if (self.body.HasBuff(AsukaBuffs.manaDefBuff))
             {
-                damageReport.damageDealt *= 0.25f; //With mana up, Asuka's effective health is 60*4.
+                damageInfo.damage *= 0.25f; //With mana up, Asuka's effective health is 60*4.
             }
 
-            orig(self, damageReport);
+            orig(self, damageInfo);
         }
     }
 }

@@ -5,11 +5,13 @@ using AsukaMod.Survivors.Asuka.Components;
 using AsukaMod.Survivors.Asuka.SkillStates;
 using RoR2;
 using RoR2.Skills;
+using R2API;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ExtraSkillSlots;
 using AsukaMod.Survivors.Asuka.Spells;
+using R2API.Utils;
 
 namespace AsukaMod.Survivors.Asuka
 {
@@ -29,6 +31,10 @@ namespace AsukaMod.Survivors.Asuka
         public override string displayPrefabName => "AsukaDisplay";
 
         public const string Asuka_PREFIX = AsukaPlugin.DEVELOPER_PREFIX + "_Asuka_";
+
+        public static Dictionary<string, BaseSpell> SpellDict = new Dictionary<string, BaseSpell>();
+        public static Dictionary<string, SkillDef> SpellSkills = new Dictionary<string, SkillDef>();
+        public static SkillDef emptySpell;
 
         //used when registering your survivor's language tokens
         public override string survivorTokenPrefix => Asuka_PREFIX;
@@ -123,6 +129,8 @@ namespace AsukaMod.Survivors.Asuka
             AddHitboxes();
             bodyPrefab.AddComponent<AsukaManaComponent>();
             bodyPrefab.AddComponent<ExtraSkillLocator>();
+            bodyPrefab.AddComponent<ExtraInputBankTest>();
+            bodyPrefab.AddComponent<AsukaTracker>();
         }
 
         public void AddHitboxes()
@@ -221,11 +229,11 @@ namespace AsukaMod.Survivors.Asuka
             //it is also a SteppedSkillDef. Custom Skilldefs are very useful for custom behaviors related to casting a skill. see ror2's different skilldefs for reference
             SteppedSkillDef primarySkillDef1 = Skills.CreateSkillDef<SteppedSkillDef>(new SkillDefInfo
                 (
-                    "AsukaSlash",
-                    Asuka_PREFIX + "PRIMARY_SLASH_NAME",
-                    Asuka_PREFIX + "PRIMARY_SLASH_DESCRIPTION",
+                    "AsukaBook",
+                    Asuka_PREFIX + "PRIMARY_BOOK_NAME",
+                    Asuka_PREFIX + "PRIMARY_BOOK_DESCRIPTION",
                     assetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
-                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)),
+                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.BookFire)),
                     "Weapon",
                     true
                 ));
@@ -249,7 +257,7 @@ namespace AsukaMod.Survivors.Asuka
                 keywordTokens = new string[] { "KEYWORD_AGILE" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.BookFire)),
                 activationStateMachineName = "Weapon2",
                 interruptPriority = EntityStates.InterruptPriority.Skill,
 
@@ -339,6 +347,115 @@ namespace AsukaMod.Survivors.Asuka
 
             Skills.AddSpecialSkills(bodyPrefab, specialSkillDef1);
         }
+
+        //These are all of Asuka's spells. They are made into SkillDefs with the BaseSpell thing so we can handle mana and stuff
+        public void InitializeSpells()
+        {
+            ExtraSkillLocator exSkillLoc = bodyPrefab.GetComponent<ExtraSkillLocator>();
+
+            //Create new SkillFamily
+            var spellSkillFamily = ScriptableObject.CreateInstance<SkillFamily>();
+
+            //IMPORTANT! Do not forget to add name for SkillFamily 
+            //because game uses it for saving loadout
+            //Also I recomend to follow naming convention "{PrefabName}{SkillSlot}Family";
+
+            //Adding skill variants to the family
+            (spellSkillFamily as ScriptableObject).name = bodyPrefab.name + "Spell" + "Family";
+            spellSkillFamily.variants = new SkillFamily.Variant[0];
+
+            Content.AddSkillFamily(spellSkillFamily);
+
+            //Adding new GenericSkill component to character prefab
+            var firstExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
+            firstExtraSkill._skillFamily = spellSkillFamily;
+            firstExtraSkill.name = bodyPrefab.name + "PrimarySpell";
+            firstExtraSkill.hideInCharacterSelect = true;
+
+            var secondExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
+            secondExtraSkill._skillFamily = spellSkillFamily;
+            secondExtraSkill.name = bodyPrefab.name + "SecondarySpell";
+            secondExtraSkill.hideInCharacterSelect= true;
+
+            var thirdExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
+            thirdExtraSkill._skillFamily = spellSkillFamily;
+            thirdExtraSkill.name = bodyPrefab.name + "UtilitySpell";
+            thirdExtraSkill.hideInCharacterSelect = true;
+
+            var fourthExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
+            fourthExtraSkill._skillFamily = spellSkillFamily;
+            fourthExtraSkill.name = bodyPrefab.name + "SpecialSpell";
+            fourthExtraSkill.hideInCharacterSelect = true;
+
+            emptySpell = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "EmptySpell",
+                skillNameToken = Asuka_PREFIX + "SPELL_EMPTY_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_EMPTY_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(BaseSpellState)),
+                //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
+                activationStateMachineName = "Weapon2",
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("EmptySpell", emptySpell);
+
+            SkillDef howlingMetron = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "HowlingMetron",
+                skillNameToken = Asuka_PREFIX + "SPELL_HOWLING_METRON_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_HOWLING_METRON_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("HowlingMetron"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(HowlingMetron)),
+                //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
+                activationStateMachineName = "Weapon2",
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("HowlingMetron", howlingMetron);
+
+            SkillDef delayedHowling = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "DelayedHowlingMetron",
+                skillNameToken = Asuka_PREFIX + "SPELL_DELAYED_HOWLING_METRON_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_DELAYED_HOWLING_METRON_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("DelayedHowlingMetron"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(DelayedHowlingMetron)),
+                //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
+                activationStateMachineName = "Weapon2",
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("DelayedHowlingMetron", delayedHowling);
+
+            Skills.AddSkillToFamily(spellSkillFamily, emptySpell);
+            Skills.AddSkillToFamily(spellSkillFamily, howlingMetron);
+            Skills.AddSkillToFamily(spellSkillFamily, delayedHowling);
+
+            exSkillLoc.extraFirst = firstExtraSkill;
+            exSkillLoc.extraSecond = secondExtraSkill;
+            exSkillLoc.extraThird = thirdExtraSkill;
+            exSkillLoc.extraFourth = fourthExtraSkill;
+        }
         #endregion skills
 
         #region skins
@@ -426,6 +543,16 @@ namespace AsukaMod.Survivors.Asuka
 
             //how to load a master set up in unity, can be an empty gameobject with just AISkillDriver components
             //assetBundle.LoadMaster(bodyPrefab, masterName);
+        }
+
+        private SkillFamily.Variant makeVariant(SkillDef skillDef)
+        {
+            return new SkillFamily.Variant
+            {
+                skillDef = skillDef,
+                unlockableDef = null,
+                viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
+            };
         }
 
         private void AddHooks()

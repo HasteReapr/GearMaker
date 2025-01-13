@@ -675,7 +675,7 @@ namespace AsukaMod.Modules
                 networkMachine.stateMachines = networkMachine.stateMachines.Append(entityStateMachine).ToArray();
             }
 
-            //Add to the array of "idle" StateMachines. For when the character dies.
+            //Add to the array of "idle" stateMachines. For when the character dies.
             //This component sets that state machine to idle, stopping what it was doing
             CharacterDeathBehavior deathBehavior = prefab.GetComponent<CharacterDeathBehavior>();
             if (deathBehavior && addToDeath)
@@ -683,7 +683,7 @@ namespace AsukaMod.Modules
                 deathBehavior.idleStateMachine = deathBehavior.idleStateMachine.Append(entityStateMachine).ToArray();
             }
 
-            //Add to the array of "idle" StateMachines.
+            //Add to the array of "idle" stateMachines.
             //Same as CharacterDeathBehavior but for stunning/freezing/etc
             SetStateOnHurt setStateOnHurt = prefab.GetComponent<SetStateOnHurt>();
             if (setStateOnHurt && addToHurt)

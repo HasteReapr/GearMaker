@@ -7,7 +7,7 @@ using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class DelayedHowlingMetron : BaseSkillState
+    internal class DelayedHowlingMetron : BaseSpellState
     {
         private Ray aimRay;
         public float baseDuration = 0.54f;

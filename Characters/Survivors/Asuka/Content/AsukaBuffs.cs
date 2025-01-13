@@ -9,6 +9,7 @@ namespace AsukaMod.Survivors.Asuka
         public static BuffDef manaDefBuff;
         public static BuffDef reduceManaCost; // Reduce Mana Cost
         public static BuffDef manaRegenCont; // Mana Regeneration Continuious
+        public static BuffDef bookmarkAuto; // Mana Regeneration Continuious
 
         public static void Init(AssetBundle assetBundle)
         {
@@ -27,6 +28,12 @@ namespace AsukaMod.Survivors.Asuka
             manaRegenCont = Modules.Content.CreateAndAddBuff("AsukaManaRegenBuff",
                 LegacyResourcesAPI.Load<BuffDef>("BuffDefs/HiddenInvincibility").iconSprite,
                 Color.green,
+                false,
+                false);
+            
+            bookmarkAuto = Modules.Content.CreateAndAddBuff("AsukaAutoBookmarkBuff",
+                LegacyResourcesAPI.Load<BuffDef>("BuffDefs/HiddenInvincibility").iconSprite,
+                Color.magenta,
                 false,
                 false);
         }

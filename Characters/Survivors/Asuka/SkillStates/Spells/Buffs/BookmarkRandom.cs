@@ -8,33 +8,23 @@ using AsukaMod.Survivors.Asuka.Components;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class BaseSpellState : BaseSkillState
+    internal class BookmarkRandom : BaseSkillState
     {
-        //The BaseSpellState will play the FailedCast animation, and then the other things override it.
-        public float duration = 0;
-
-        public float ManaCost = 0;
-        public bool CastFailed = false;
+        public float baseDuration = 0.29f;
+        public float duration;
+        private Animator animator;
 
         public override void OnEnter()
         {
             base.OnEnter();
-
-            //If our current mana is less than our mana cost, we do our fail cast animation.
-            if(GetComponent<AsukaManaComponent>().mana < ManaCost)
-            {
-                CastFailed = true;
-                duration = 1.5f / attackSpeedStat; //We divide by the attack speed stat so it's less punishing to try and cast a spell without enough mana later in the run.
-            }
-            else
-            {
-                GetComponent<AsukaManaComponent>().AddMana(-ManaCost);
-            }
+            duration = baseDuration / attackSpeedStat;
+            GetComponent<AsukaManaComponent>().DrawFullHand();
         }
 
         public override void OnExit()
         {
             base.OnExit();
+            //Here we unset the skill override, so it should default to the "empty" card slot.
         }
 
         public override void FixedUpdate()

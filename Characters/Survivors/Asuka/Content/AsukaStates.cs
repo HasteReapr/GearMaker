@@ -26,6 +26,9 @@ namespace AsukaMod.Survivors.Asuka
             Modules.Content.AddEntityState(typeof(ManaRegenCont));
             Modules.Content.AddEntityState(typeof(ManaRegenInstant));
             Modules.Content.AddEntityState(typeof(ReduceManaCost));
+            Modules.Content.AddEntityState(typeof(BookmarkAuto));
+            Modules.Content.AddEntityState(typeof(BookmarkFull));
+            Modules.Content.AddEntityState(typeof(BookmarkRandom));
         }
     }
 }

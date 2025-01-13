@@ -47,11 +47,11 @@ namespace AsukaMod.Survivors.Asuka.Components
 
         public int SelectedDeck = 0; //0 deckA 1 deckB 2 deckC
         //public SkillFamily deckA;
-        private List<BaseSpell> deckA;
+        private List<SkillDef> deckA;
         private List<int> drawnSkillIndiciesA = new List<int>();
-        public SkillFamily deckB;
+        public List<SkillDef> deckB;
         private List<int> drawnSkillIndiciesB = new List<int>();
-        public SkillFamily deckC;
+        public List<SkillDef> deckC;
         private List<int> drawnSkillIndiciesC = new List<int>();
 
         private bool initialDeck = true;
@@ -168,15 +168,7 @@ namespace AsukaMod.Survivors.Asuka.Components
             //Check for a character body
             if (charBody != null)
             {
-                if (NetworkServer.active)
-                {
-                    HealthComponent.onCharacterHealServer += HealthComponent_onCharacterHealServer;
-                    
-                }
                 //Populate and setup the decks in the arrays first, for easier tracking.
-                //Initialize();
-                //This method is more versatile than StarStorm's version, as it allows you to choose which deck is used.
-
                 PopulateDecks();
                 
                 //We give Asuka the defense buff when we spawn in. This buff gets removed when you run out of mana.
@@ -188,69 +180,14 @@ namespace AsukaMod.Survivors.Asuka.Components
 
         public void Update()
         {
-            if(charBody.hasEffectiveAuthority && !PauseManager.isPaused)
-            {
-                if (isCheckingInput)
-                {
-                    isCheckingInputTimer += Time.deltaTime;
-                    if (isCheckingInputTimer >= 3f)
-                    {
-                        isCheckingInput = false;
-                        isCheckingInputTimer = 0f;
-                    }
-                }
-                if (!isCheckingInput)
-                {
-                    isCheckingInputTimer = 0f;
-                }
-                if (isExecutingSkill)
-                {
-                    isExecutingInputTimer += Time.deltaTime;
-                    if (isExecutingInputTimer >= 3f)
-                    {
-                        isExecutingSkill = false;
-                        isExecutingInputTimer = 0f;
-                    }
-                }
-                if (!isExecutingSkill)
-                {
-                    isExecutingInputTimer = 0f;
-                }
-            }
-        }
 
-        private bool CheckSimpleInput()
-        {
-            bool triggeredSomething = false;
-            if (UnityEngine.Input.GetKeyDown(Config.punchSpellTrigger.Value.MainKey))
-            {
-                
-                triggeredSomething = true;
-            }
-            else if (UnityEngine.Input.GetKeyDown(Config.kickSpellTrigger.Value.MainKey))
-            {
-                
-                triggeredSomething = true;
-            }
-            else if (UnityEngine.Input.GetKeyDown(Config.slashSpellTrigger.Value.MainKey))
-            {
-                
-                triggeredSomething = true;
-            }
-            else if (UnityEngine.Input.GetKeyDown(Config.heavySpellTrigger.Value.MainKey))
-            {
-                
-                triggeredSomething = true;
-            }
-            
-            return triggeredSomething;
         }
 
         public void FixedUpdate()
         {
             if (charBody.HasBuff(AsukaBuffs.manaRegenCont))
             {
-                AddMana(mpsRecoverContinous);
+                AddMana(mpsRecoverContinous * Time.fixedDeltaTime);
             }
         }
 
@@ -266,24 +203,29 @@ namespace AsukaMod.Survivors.Asuka.Components
         }
 
         //Full draw, used for Bookmark Random Import, and initializing.
-        private void DrawFullHand()
+        public void DrawFullHand()
         {
             //Draw a card in each hand.
-            /*exSkillLoc.extraFirst.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
-            if (exSkillLoc.extraFirst.skillDef == emptySpell)
+            //We unset the skill override in case it isn't the empty spell, then immedietly replace it with a spell.
+            if (exSkillLoc.extraFirst.skillDef != emptySpell)
                 exSkillLoc.extraFirst.UnsetSkillOverride(gameObject, exSkillLoc.extraFirst.skillDef, GenericSkill.SkillOverridePriority.Replacement);
 
-            exSkillLoc.extraSecond.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
-            if (exSkillLoc.extraSecond.skillDef == emptySpell)
+            exSkillLoc.extraFirst.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
+
+            if (exSkillLoc.extraSecond.skillDef != emptySpell)
                 exSkillLoc.extraSecond.UnsetSkillOverride(gameObject, exSkillLoc.extraSecond.skillDef, GenericSkill.SkillOverridePriority.Replacement);
 
-            exSkillLoc.extraThird.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
-            if (exSkillLoc.extraThird.skillDef == emptySpell)
+            exSkillLoc.extraSecond.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
+
+            if (exSkillLoc.extraThird.skillDef != emptySpell)
                 exSkillLoc.extraThird.UnsetSkillOverride(gameObject, exSkillLoc.extraThird.skillDef, GenericSkill.SkillOverridePriority.Replacement);
 
+            exSkillLoc.extraThird.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
+
+            if (exSkillLoc.extraFourth.skillDef != emptySpell)
+                exSkillLoc.extraFourth.UnsetSkillOverride(gameObject, exSkillLoc.extraFourth.skillDef, GenericSkill.SkillOverridePriority.Replacement);
+
             exSkillLoc.extraFourth.SetSkillOverride(gameObject, DrawFromDeck(SelectedDeck), GenericSkill.SkillOverridePriority.Replacement);
-            if (exSkillLoc.extraFourth.skillDef == emptySpell)
-                exSkillLoc.extraFourth.UnsetSkillOverride(gameObject, exSkillLoc.extraFourth.skillDef, GenericSkill.SkillOverridePriority.Replacement);*/
 
             
         }
@@ -340,22 +282,7 @@ namespace AsukaMod.Survivors.Asuka.Components
             }
         }
 
-        /*private SkillFamily GetDeckByIndex(int deckIndex)
-        {
-            switch (deckIndex)
-            {
-                case 0:
-                    return deckA;
-                case 1:
-                    return deckB;
-                case 2:
-                    return deckC;
-                default:
-                    return null;
-            }
-        }*/
-
-        private List<BaseSpell> GetDeckByIndex(int deckIndex)
+        private List<SkillDef> GetDeckByIndex(int deckIndex)
         {
             switch (deckIndex)
             {
@@ -385,26 +312,21 @@ namespace AsukaMod.Survivors.Asuka.Components
             }
         }
 
-        private void HealthComponent_onCharacterHealServer(HealthComponent arg1, float arg2, ProcChainMask arg3)
-        {
-            
-        }
-
         //Here at the very bottom we fill out all of the decks with our cards
         private void PopulateDecks()
         {
-            deckA = new List<BaseSpell>();
+            deckA = new List<SkillDef>();
 
             for(int i = 0; i < 2; i++)
-                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("ReduceManaCost"));
+                deckA.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("RecoverMana"));
+            for(int i = 0; i < 2; i++)
+                deckA.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("BookmarkFull"));
             for(int i = 0; i < 6; i++)
-                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("HowlingMetron"));
+                deckA.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("HowlingMetron"));
             for(int i = 0; i < 5; i++)
-                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("DelayedHowlingMetron"));
+                deckA.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("DelayedHowlingMetron"));
             for(int i = 0; i < 5; i++)
-                deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("HowlingMetronMSProcessing"));
-            //for(int i = 0; i < 5; i++)
-            //    deckA.Add(AsukaSurvivor.SpellDict.GetValueOrDefault("HowlingMetron"));
+                deckA.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("HowlingMSProcess"));
         }
     }
 }

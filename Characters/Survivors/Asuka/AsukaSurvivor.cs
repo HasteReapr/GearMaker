@@ -128,7 +128,6 @@ namespace AsukaMod.Survivors.Asuka
         {
             AddHitboxes();
             bodyPrefab.AddComponent<AsukaManaComponent>();
-            bodyPrefab.AddComponent<ExtraSkillLocator>();
             bodyPrefab.AddComponent<ExtraInputBankTest>();
             bodyPrefab.AddComponent<AsukaTracker>();
         }
@@ -165,6 +164,7 @@ namespace AsukaMod.Survivors.Asuka
             AddSecondarySkills();
             AddUtiitySkills();
             AddSpecialSkills();
+            InitializeSpells();
         }
 
         //skip if you don't have a passive
@@ -351,7 +351,7 @@ namespace AsukaMod.Survivors.Asuka
         //These are all of Asuka's spells. They are made into SkillDefs with the BaseSpell thing so we can handle mana and stuff
         public void InitializeSpells()
         {
-            ExtraSkillLocator exSkillLoc = bodyPrefab.GetComponent<ExtraSkillLocator>();
+            ExtraSkillLocator exSkillLoc = bodyPrefab.AddComponent<ExtraSkillLocator>();
 
             //Create new SkillFamily
             var spellSkillFamily = ScriptableObject.CreateInstance<SkillFamily>();
@@ -367,37 +367,27 @@ namespace AsukaMod.Survivors.Asuka
             Content.AddSkillFamily(spellSkillFamily);
 
             //Adding new GenericSkill component to character prefab
-            var firstExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
-            firstExtraSkill._skillFamily = spellSkillFamily;
-            firstExtraSkill.name = bodyPrefab.name + "PrimarySpell";
-            firstExtraSkill.hideInCharacterSelect = true;
+            GenericSkill SpellGenericSkill = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkill.name = "Spells";
+            SpellGenericSkill._skillFamily = spellSkillFamily;
+            SpellGenericSkill.hideInCharacterSelect = true;
 
-            var secondExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
-            secondExtraSkill._skillFamily = spellSkillFamily;
-            secondExtraSkill.name = bodyPrefab.name + "SecondarySpell";
-            secondExtraSkill.hideInCharacterSelect= true;
-
-            var thirdExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
-            thirdExtraSkill._skillFamily = spellSkillFamily;
-            thirdExtraSkill.name = bodyPrefab.name + "UtilitySpell";
-            thirdExtraSkill.hideInCharacterSelect = true;
-
-            var fourthExtraSkill = bodyPrefab.AddComponent<GenericSkill>();
-            fourthExtraSkill._skillFamily = spellSkillFamily;
-            fourthExtraSkill.name = bodyPrefab.name + "SpecialSpell";
-            fourthExtraSkill.hideInCharacterSelect = true;
+            exSkillLoc.extraFirst = SpellGenericSkill;
+            exSkillLoc.extraSecond = SpellGenericSkill;
+            exSkillLoc.extraThird = SpellGenericSkill;
+            exSkillLoc.extraFourth = SpellGenericSkill;
 
             emptySpell = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "EmptySpell",
                 skillNameToken = Asuka_PREFIX + "SPELL_EMPTY_NAME",
                 skillDescriptionToken = Asuka_PREFIX + "SPELL_EMPTY_DESCRIPTION",
-                skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+                skillIcon = assetBundle.LoadAsset<Sprite>("BookmarkFullImport"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(BaseSpellState)),
                 //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
-                activationStateMachineName = "Weapon2",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
@@ -415,9 +405,8 @@ namespace AsukaMod.Survivors.Asuka
                 skillIcon = assetBundle.LoadAsset<Sprite>("HowlingMetron"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(HowlingMetron)),
-                //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
-                activationStateMachineName = "Weapon2",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
@@ -435,9 +424,8 @@ namespace AsukaMod.Survivors.Asuka
                 skillIcon = assetBundle.LoadAsset<Sprite>("DelayedHowlingMetron"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(DelayedHowlingMetron)),
-                //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
-                activationStateMachineName = "Weapon2",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
@@ -447,14 +435,233 @@ namespace AsukaMod.Survivors.Asuka
             });
             SpellSkills.Add("DelayedHowlingMetron", delayedHowling);
 
+            SkillDef delayedTardusMetron = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "DelayedTardusMetron",
+                skillNameToken = Asuka_PREFIX + "SPELL_DELAYED_TARDUS_METRON_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_DELAYED_TARDUS_METRON_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("DelayedTardusMetron"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(DelayedTardusMetron)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("DelayedTardusMetron", delayedTardusMetron);
+
+            SkillDef howlingMSProcess = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "HowlingMetronMSProcess",
+                skillNameToken = Asuka_PREFIX + "SPELL_HOWLING_METRON_MS_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_HOWLING_METRON_MS_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("HowlingMetronMSProcessessing"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(HowlingMSProcess)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("HowlingMSProcess", howlingMSProcess);
+
+            SkillDef arpeggioMetron = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "MetronArpeggio",
+                skillNameToken = Asuka_PREFIX + "SPELL_METRON_ARPEGGIO_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_METRON_ARPEGGIO_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("MetronArpeggio"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(MetronArpeggio)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("MetronArpeggio", arpeggioMetron);
+
+            SkillDef bitShiftMetron = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "BitShiftMetron",
+                skillNameToken = Asuka_PREFIX + "SPELL_BIT_SHIFT_METRON_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_BIT_SHIFT_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("BitShiftMetron"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(BitShiftMetron)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                fullRestockOnAssign = false,
+                baseMaxStock = 5,
+                baseRechargeInterval = 5f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("BitShiftMetron", bitShiftMetron);
+
+            SkillDef goToMarker = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "goToMarker",
+                skillNameToken = Asuka_PREFIX + "SPELL_TELEPORT_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_TELEPORT_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("goToMarker"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(GoToMarker)),
+                activationStateMachineName = "Body",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("GoToMarker", goToMarker);
+
+            SkillDef reduceMana = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "ReduceManaCost",
+                skillNameToken = Asuka_PREFIX + "SPELL_REDUCE_MANA_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_REDUCE_MANA_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("ManaReduce"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(ReduceManaCost)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("ReduceManaCost", reduceMana);
+
+            SkillDef regenMana = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "regenMana",
+                skillNameToken = Asuka_PREFIX + "SPELL_REGEN_MANA_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_REGEN_MANA_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("ManaRegen"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(ManaRegenCont)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("RegenMana", regenMana);
+
+            SkillDef recoverMana = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "SpellRecoverMana",
+                skillNameToken = Asuka_PREFIX + "SPELL_RECOVER_MANA_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_RECOVER_MANA_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("ManaRecover"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(ManaRegenInstant)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("RecoverMana", recoverMana);
+
+            SkillDef bookmarkAuto = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "BookmarkAutoImport",
+                skillNameToken = Asuka_PREFIX + "SPELL_BOOKMARK_AUTO_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_BOOKMARK_AUTO_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("BookmarkAutoImport"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(BookmarkAuto)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("BookmarkAuto", bookmarkAuto);
+
+            SkillDef bookmarkRand = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "BookmarkRandom",
+                skillNameToken = Asuka_PREFIX + "SPELL_BOOKMARK_RAND_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_BOOKMARK_RAND_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("BookmarkRandomImport"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(BookmarkRandom)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("BookmarkRandom", bookmarkRand);
+
+            SkillDef bookmarkFull = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "SpellRecoverMana",
+                skillNameToken = Asuka_PREFIX + "SPELL_BOOKMARK_FULL_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_BOOKMARK_FULL_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("BookmarkFullImport"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(BookmarkFull)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("BookmarkFull", bookmarkFull);
+
             Skills.AddSkillToFamily(spellSkillFamily, emptySpell);
+
             Skills.AddSkillToFamily(spellSkillFamily, howlingMetron);
             Skills.AddSkillToFamily(spellSkillFamily, delayedHowling);
+            Skills.AddSkillToFamily(spellSkillFamily, howlingMSProcess);
+            Skills.AddSkillToFamily(spellSkillFamily, delayedTardusMetron);
+            Skills.AddSkillToFamily(spellSkillFamily, arpeggioMetron);
+            Skills.AddSkillToFamily(spellSkillFamily, bitShiftMetron);
+            Skills.AddSkillToFamily(spellSkillFamily, goToMarker);
 
-            exSkillLoc.extraFirst = firstExtraSkill;
-            exSkillLoc.extraSecond = secondExtraSkill;
-            exSkillLoc.extraThird = thirdExtraSkill;
-            exSkillLoc.extraFourth = fourthExtraSkill;
+            Skills.AddSkillToFamily(spellSkillFamily, reduceMana);
+            Skills.AddSkillToFamily(spellSkillFamily, recoverMana);
+            Skills.AddSkillToFamily(spellSkillFamily, regenMana);
+
+            Skills.AddSkillToFamily(spellSkillFamily, bookmarkFull);
+            Skills.AddSkillToFamily(spellSkillFamily, bookmarkRand);
+            Skills.AddSkillToFamily(spellSkillFamily, bookmarkAuto);
         }
         #endregion skills
 

@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3219090629
+CRC: 404231434
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1ad26613b5e5147c73b07e13239a282f
+    Hash: 447ad36e171c74b3df07a70cdd47351e
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 01ab68918a4dd982bcc4a740d1c90321
+    Hash: 32409803e1ac0638bbded6ba49b24c38
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -40,9 +40,45 @@ ClassTypes:
 - Class: 108
   Script: {instanceID: 0}
 - Class: 114
+  Script: {fileID: 678291247, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: 1790887305, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 751bd37d2e55f5f448dbb0d97812d9ba, type: 3}
 - Class: 114
+  Script: {fileID: -197296741, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: 298587437, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -598719375, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -1848696948, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -270136354, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -1819008361, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: 1952984350, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -455717551, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: 306635731, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -315171339, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -1895344032, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 261c50d8a80898e4ebf2e8e415ea6766, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+- Class: 114
+  Script: {fileID: 1395413934, guid: da77c7bbf69f66ab2145560542327715, type: 3}
+- Class: 114
+  Script: {fileID: 372142912, guid: d382a022563c7517aadbc92ca1060016, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 68ee60b5bcd2668489cac0473619dffe, type: 3}
 - Class: 114
@@ -63,105 +99,80 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 223
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
 - Class: 319
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
 - AssemblyName: Assembly-CSharp
   ClassName: ChildLocator/NameTransformPair
+- AssemblyName: RoR2
+  ClassName: EntityStates.SerializableEntityStateType
+- AssemblyName: RoR2
+  ClassName: RoR2.DamageTypeCombo
+- AssemblyName: RoR2
+  ClassName: RoR2.SkillLocator/PassiveSkill
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentCallGroup
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.UnityEvent
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
+- AssemblyName: com.unity.multiplayer-hlapi.Runtime
+  ClassName: UnityEngine.Networking.NetworkHash128
+- AssemblyName: com.unity.multiplayer-hlapi.Runtime
+  ClassName: UnityEngine.Networking.NetworkSceneId
 Assets:
+- Assets/AsukaAssets/Projectiles/HowlingMetron_Ghost.prefab
 - Assets/HenryAssets/AsukaBundle/Animation/clips/DefaultPose.anim
-- Assets/AsukaAssets/Icons/DelayedTardusMetron.png
+- Assets/AsukaAssets/Projectiles/DelayedTardus.prefab
 - Assets/HenryAssets/AsukaBundle/Icons/texMasteryAchievement.png
 - Assets/HenryAssets/AsukaBundle/Materials/matRebellion.mat
 - Assets/HenryAssets/AsukaBundle/Mesh/meshNeoCoat.mesh
 - Assets/HenryAssets/AsukaBundle/Animation/clips/Slash2.anim
-- Assets/HenryAssets/AsukaBundle/Mesh/meshVergil.mesh
-- Assets/HenryAssets/AsukaBundle/Animation/clips/Descend.anim
-- Assets/HenryAssets/AsukaBundle/Icons/texAsukaAchievement.png
-- Assets/HenryAssets/AsukaBundle/Icons/texSpecialIcon.png
-- Assets/HenryAssets/AsukaBundle/VFX/AsukaFistSwingEffect.prefab
-- Assets/HenryAssets/AsukaBundle/Animation/clips/Idle.anim
+- Assets/AsukaAssets/Icons/RepulsiveRod.png
+- Assets/HenryAssets/AsukaBundle/Animation/clips/SprintR.anim
 - Assets/HenryAssets/AsukaBundle/Icons/texUtilityIcon.png
 - Assets/AsukaAssets/Icons/MetronArpeggio.png
-- Assets/HenryAssets/AsukaBundle/Animation/clips/SprintR.anim
-- Assets/HenryAssets/AsukaBundle/Animation/animAsukaMenu.controller
 - Assets/AsukaAssets/Icons/GoToMarker.png
-- Assets/HenryAssets/AsukaBundle/Animation/maskImpact.mask
 - Assets/HenryAssets/AsukaBundle/Animation/clips/ShootGun.anim
-- Assets/HenryAssets/AsukaBundle/Animation/clips/WalkB.anim
-- Assets/HenryAssets/AsukaBundle/Icons/texStingerIcon.png
 - Assets/HenryAssets/AsukaBundle/Icons/texAsukaIcon.png
-- Assets/HenryAssets/AsukaBundle/Mesh/meshAsukaAlt.mesh
-- Assets/HenryAssets/AsukaBundle/Mesh/meshRebellion.mesh
-- Assets/AsukaAssets/Icons/RepulsiveRod.png
-- Assets/HenryAssets/AsukaBundle/Textures/texBazooka.png
-- Assets/AsukaAssets/Icons/BookmarkRandomImport.png
-- Assets/HenryAssets/AsukaBundle/Textures/texAsuka.png
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matDust.mat
+- Assets/HenryAssets/AsukaBundle/Textures/texAsuka.png
+- Assets/AsukaAssets/Projectiles/BitShiftMetron_Ghost.prefab
 - Assets/HenryAssets/AsukaBundle/Animation/clips/IdleAdditive.anim
-- Assets/HenryAssets/AsukaBundle/AsukaBombGhost.prefab
+- Assets/AsukaAssets/UI/AsukaManaUI.prefab
 - Assets/HenryAssets/AsukaBundle/Animation/clips/WalkR.anim
-- Assets/HenryAssets/AsukaBundle/Materials/matBoxingGlove.mat
 - Assets/HenryAssets/AsukaBundle/VFX/Mesh/meshBoxingGlove.mesh
 - Assets/HenryAssets/AsukaBundle/Textures/texShotgun.png
 - Assets/HenryAssets/AsukaBundle/VFX/Textures/texSmoke.png
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matPunchEffect.mat
 - Assets/HenryAssets/AsukaBundle/Icons/texBazookaOutIcon.png
-- Assets/AsukaAssets/Icons/ManaReduce.png
 - Assets/HenryAssets/AsukaBundle/VFX/Textures/texSlash.png
-- Assets/HenryAssets/AsukaBundle/Mesh/MeshAsukaGun.mesh
-- Assets/AsukaAssets/Icons/MetronScreamer808.png
 - Assets/HenryAssets/AsukaBundle/Materials/matDante.mat
-- Assets/HenryAssets/AsukaBundle/Textures/texAsukaJediEmission.png
-- Assets/HenryAssets/AsukaBundle/VFX/Mesh/meshSwing.asset
+- Assets/HenryAssets/AsukaBundle/VFX/Textures/texPunchImpact.png
 - Assets/HenryAssets/AsukaBundle/VFX/AsukaSwordSwingEffect.prefab
 - Assets/HenryAssets/AsukaBundle/VFX/Textures/texDust.png
-- Assets/HenryAssets/AsukaBundle/Animation/clips/RestIdleIn.anim
-- Assets/HenryAssets/AsukaBundle/Icons/texPistolIcon.png
-- Assets/HenryAssets/AsukaBundle/Icons/texPrimaryIcon.png
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matSwingEffect.mat
 - Assets/HenryAssets/AsukaBundle/Mesh/meshAsuka.mesh
-- Assets/HenryAssets/AsukaBundle/Icons/texPassiveIcon.png
-- Assets/HenryAssets/AsukaBundle/Materials/matAsukaAlt.mat
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matSwingEffect.mat
 - Assets/HenryAssets/AsukaBundle/Mesh/meshDanteCoat.mesh
-- Assets/AsukaAssets/Icons/ChaoticOption.png
 - Assets/HenryAssets/AsukaBundle/Animation/clips/DescendFast.anim
-- Assets/HenryAssets/AsukaBundle/AsukaDisplay.prefab
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matPunchImpact.mat
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matFire.mat
-- Assets/HenryAssets/AsukaBundle/VFX/AsukaBazookaMuzzleFlash.prefab
-- Assets/HenryAssets/AsukaBundle/VFX/BombExplosionEffect.prefab
-- Assets/AsukaAssets/Icons/AquilaMetron.png
+- Assets/HenryAssets/AsukaBundle/VFX/Textures/texFire.tga
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matTrail.mat
 - Assets/HenryAssets/AsukaBundle/Materials/matAsukaJedi.mat
-- Assets/HenryAssets/AsukaBundle/Textures/texAsukaDanteEmission.png
-- Assets/HenryAssets/AsukaBundle/Textures/texAsukaVergil.png
 - Assets/HenryAssets/AsukaBundle/VFX/Textures/texLightning.tif
-- Assets/HenryAssets/AsukaBundle/Animation/clips/Roll.anim
-- Assets/AsukaAssets/Icons/BookmarkFullImport.png
 - Assets/HenryAssets/AsukaBundle/Materials/matShotgun.mat
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matPunchImpactShadow.mat
 - Assets/HenryAssets/AsukaBundle/VFX/FistBarrageEffect.prefab
-- Assets/HenryAssets/AsukaBundle/Icons/texShotgunIcon.png
 - Assets/HenryAssets/AsukaBundle/Animation/clips/IdleIn.anim
 - Assets/HenryAssets/AsukaBundle/Icons/texBoxingGlovesIcon.png
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matPunchImpact.mat
-- Assets/HenryAssets/AsukaBundle/Mesh/meshYamato.mesh
-- Assets/HenryAssets/AsukaBundle/Animation/clips/AimPitch.anim
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matEmbers.mat
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matSlash.mat
-- Assets/HenryAssets/AsukaBundle/Animation/clips/Slash1.anim
-- Assets/HenryAssets/AsukaBundle/Materials/matBazookaRocket.mat
-- Assets/HenryAssets/AsukaBundle/Animation/clips/MenuIdle.anim
-- Assets/HenryAssets/AsukaBundle/VFX/Textures/texFistSwing.png
-- Assets/HenryAssets/AsukaBundle/Icons/texSecondaryIcon.png
 - Assets/HenryAssets/AsukaBundle/VFX/Textures/texSwingEffect.png
-- Assets/AsukaAssets/Icons/DelayedHowlingMetron.png
-- Assets/HenryAssets/AsukaBundle/Animation/maskAimYaw.mask
-- Assets/HenryAssets/AsukaBundle/VFX/Textures/texFire.tga
-- Assets/AsukaAssets/Icons/TerraMetron.png
-- Assets/HenryAssets/AsukaBundle/Animation/maskAimBazooka.mask
+- Assets/HenryAssets/AsukaBundle/Animation/clips/Slash1.anim
 - Assets/HenryAssets/AsukaBundle/Icons/texBazookaIconScepter.png
-- Assets/HenryAssets/AsukaBundle/VFX/Textures/texPunchImpact.png
 - Assets/HenryAssets/AsukaBundle/mdlAsuka.prefab
 - Assets/HenryAssets/AsukaBundle/Animation/clips/Jump.anim
 - Assets/HenryAssets/AsukaBundle/Mesh/meshPistol.mesh
@@ -169,73 +180,133 @@ Assets:
 - Assets/AsukaAssets/Icons/BookmarkAutoImport.png
 - Assets/HenryAssets/AsukaBundle/Animation/maskLeftArm.mask
 - Assets/HenryAssets/AsukaBundle/Animation/clips/SprintF.anim
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matRipple.mat
-- Assets/HenryAssets/AsukaBundle/Materials/matAsukaNeo.mat
-- Assets/HenryAssets/AsukaBundle/Animation/maskAimPitch.mask
 - Assets/HenryAssets/AsukaBundle/Mesh/meshDante.mesh
 - Assets/HenryAssets/AsukaBundle/Animation/clips/RestIdle.anim
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matFistSwing.mat
-- Assets/HenryAssets/AsukaBundle/Materials/matVergil.mat
-- Assets/HenryAssets/AsukaBundle/VFX/AsukaDustEffect.prefab
-- Assets/HenryAssets/AsukaBundle/Materials/matAsuka.mat
-- Assets/HenryAssets/AsukaBundle/VFX/Mesh/meshPunchShockwave.mesh
-- Assets/HenryAssets/AsukaBundle/Animation/clips/SprintL.anim
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matAnimeShapes.mat
-- Assets/HenryAssets/AsukaBundle/AsukaMonsterMaster.prefab
 - Assets/AsukaAssets/Icons/ManaRegen.png
-- Assets/AsukaAssets/Icons/RMSBoostMetron.png
+- Assets/HenryAssets/AsukaBundle/VFX/Mesh/meshPunchShockwave.mesh
+- Assets/AsukaAssets/Projectiles/SpaceCube.prefab
 - Assets/HenryAssets/AsukaBundle/AsukaBazookaRocketGhost.prefab
-- Assets/HenryAssets/AsukaBundle/Animation/animAsuka.controller
-- Assets/HenryAssets/AsukaBundle/Mesh/meshUzi.mesh
-- Assets/AsukaAssets/Icons/HighPassGravity.png
 - Assets/AsukaAssets/Icons/LowPassGravity.png
 - Assets/AsukaAssets/Icons/ShootingDecelerate.png
 - Assets/AsukaAssets/Icons/Sampler404.png
-- Assets/HenryAssets/AsukaBundle/Animation/clips/ThrowBomb.anim
-- Assets/HenryAssets/AsukaBundle/VFX/Textures/texEmbers.png
 - Assets/HenryAssets/AsukaBundle/Materials/matBazooka.mat
 - Assets/HenryAssets/AsukaBundle/Textures/texBoxingGlove.png
-- Assets/HenryAssets/AsukaBundle/VFX/Materials/matHitSparkPunch.mat
-- Assets/AsukaAssets/Icons/BitShiftMetron.png
-- Assets/HenryAssets/AsukaBundle/Animation/maskGesture.mask
-- Assets/HenryAssets/AsukaBundle/Animation/clips/MenuIdleIn.anim
-- Assets/HenryAssets/AsukaBundle/VFX/Textures/texAsukaSwing2.png
-- Assets/HenryAssets/AsukaBundle/Materials/matRoy.mat
 - Assets/AsukaAssets/Icons/HowlingMetronMSProcessessing.png
+- Assets/AsukaAssets/Projectiles/HowlingProcess_Ghost.prefab
 - Assets/HenryAssets/AsukaBundle/Icons/texMainSkin.png
-- Assets/HenryAssets/AsukaBundle/VFX/AsukaBazookaExplosionEffect.prefab
 - Assets/HenryAssets/AsukaBundle/Icons/texGrandMasteryAchievement.png
-- Assets/HenryAssets/AsukaBundle/Textures/texAsukaNeo.png
+- Assets/AsukaAssets/Projectiles/BitShiftMetron.prefab
 - Assets/HenryAssets/AsukaBundle/Icons/texVergilAchievement.png
-- Assets/HenryAssets/AsukaBundle/VFX/Textures/texHitSpark.png
 - Assets/HenryAssets/AsukaBundle/Animation/maskBandana.mask
-- Assets/HenryAssets/AsukaBundle/VFX/Textures/texRipple.png
+- Assets/HenryAssets/AsukaBundle/Textures/texAsukaNeo.png
 - Assets/HenryAssets/AsukaBundle/Animation/clips/WalkL.anim
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matSwingShadow.mat
 - Assets/HenryAssets/AsukaBundle/Animation/clips/Ascend.anim
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matHitSpark.mat
 - Assets/HenryAssets/AsukaBundle/Mesh/meshAsukaNeo.mesh
 - Assets/AsukaAssets/Icons/AccipiterMetron.png
+- Assets/AsukaAssets/Projectiles/SpaceCube_Ghost.prefab
 - Assets/HenryAssets/AsukaBundle/Mesh/meshAsukaSwordAlt.mesh
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matAsukaSwing2.mat
+- Assets/AsukaAssets/Icons/GravityRodShooting.png
+- Assets/AsukaAssets/Icons/ShootingAccelerate.png
+- Assets/HenryAssets/AsukaBundle/Textures/texAsukaAlt.png
+- Assets/AsukaAssets/Projectiles/DelayedHowlingMetron.prefab
+- Assets/HenryAssets/AsukaBundle/Icons/texBazookaFireIcon.png
+- Assets/HenryAssets/AsukaBundle/VFX/ImpactAsukaPunch.prefab
+- Assets/AsukaAssets/Projectiles/HowlingMetron.prefab
+- Assets/HenryAssets/AsukaBundle/Animation/clips/AimYaw.anim
+- Assets/HenryAssets/AsukaBundle/Mesh/meshAsukaSword.mesh
+- Assets/HenryAssets/AsukaBundle/Icons/texDanteAchievement.png
+- Assets/AsukaAssets/Icons/DelayedTardusMetron.png
+- Assets/HenryAssets/AsukaBundle/Mesh/meshVergil.mesh
+- Assets/HenryAssets/AsukaBundle/Animation/clips/Descend.anim
+- Assets/HenryAssets/AsukaBundle/Icons/texAsukaAchievement.png
+- Assets/HenryAssets/AsukaBundle/Icons/texSpecialIcon.png
+- Assets/HenryAssets/AsukaBundle/VFX/AsukaFistSwingEffect.prefab
+- Assets/HenryAssets/AsukaBundle/Animation/clips/WalkB.anim
+- Assets/HenryAssets/AsukaBundle/Animation/clips/Idle.anim
+- Assets/HenryAssets/AsukaBundle/Mesh/meshRebellion.mesh
+- Assets/HenryAssets/AsukaBundle/Animation/animAsukaMenu.controller
+- Assets/HenryAssets/AsukaBundle/Animation/maskImpact.mask
+- Assets/AsukaAssets/Projectiles/DelayedTardus_Ghost.prefab
+- Assets/AsukaAssets/Icons/BookmarkRandomImport.png
+- Assets/HenryAssets/AsukaBundle/Icons/texStingerIcon.png
+- Assets/HenryAssets/AsukaBundle/Textures/texBazooka.png
+- Assets/HenryAssets/AsukaBundle/Mesh/meshAsukaAlt.mesh
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matPunchEffect.mat
+- Assets/HenryAssets/AsukaBundle/AsukaBombGhost.prefab
+- Assets/HenryAssets/AsukaBundle/Materials/matBoxingGlove.mat
+- Assets/AsukaAssets/Icons/ManaReduce.png
+- Assets/HenryAssets/AsukaBundle/Mesh/MeshAsukaGun.mesh
+- Assets/AsukaAssets/Icons/MetronScreamer808.png
+- Assets/HenryAssets/AsukaBundle/Textures/texAsukaJediEmission.png
+- Assets/HenryAssets/AsukaBundle/VFX/BombExplosionEffect.prefab
+- Assets/HenryAssets/AsukaBundle/VFX/Mesh/meshSwing.asset
+- Assets/HenryAssets/AsukaBundle/Animation/clips/RestIdleIn.anim
+- Assets/HenryAssets/AsukaBundle/Icons/texPistolIcon.png
+- Assets/HenryAssets/AsukaBundle/Icons/texPrimaryIcon.png
+- Assets/AsukaAssets/Icons/ChaoticOption.png
+- Assets/HenryAssets/AsukaBundle/Icons/texPassiveIcon.png
+- Assets/HenryAssets/AsukaBundle/Materials/matAsukaAlt.mat
+- Assets/HenryAssets/AsukaBundle/AsukaDisplay.prefab
+- Assets/HenryAssets/AsukaBundle/VFX/AsukaBazookaMuzzleFlash.prefab
+- Assets/AsukaAssets/Icons/AquilaMetron.png
+- Assets/AsukaAssets/Icons/DelayedHowlingMetron.png
+- Assets/HenryAssets/AsukaBundle/Textures/texAsukaDanteEmission.png
+- Assets/HenryAssets/AsukaBundle/Textures/texAsukaVergil.png
+- Assets/HenryAssets/AsukaBundle/Animation/clips/Roll.anim
+- Assets/AsukaAssets/Icons/BookmarkFullImport.png
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matPunchImpactShadow.mat
+- Assets/HenryAssets/AsukaBundle/Icons/texShotgunIcon.png
+- Assets/HenryAssets/AsukaBundle/VFX/Textures/texFistSwing.png
+- Assets/HenryAssets/AsukaBundle/Mesh/meshYamato.mesh
+- Assets/HenryAssets/AsukaBundle/Animation/clips/AimPitch.anim
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matEmbers.mat
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matSlash.mat
+- Assets/AsukaAssets/Icons/TerraMetron.png
+- Assets/HenryAssets/AsukaBundle/Materials/matBazookaRocket.mat
+- Assets/HenryAssets/AsukaBundle/Animation/clips/MenuIdle.anim
+- Assets/HenryAssets/AsukaBundle/Icons/texSecondaryIcon.png
+- Assets/AsukaAssets/Icons/HighPassGravity.png
+- Assets/HenryAssets/AsukaBundle/Animation/maskAimYaw.mask
+- Assets/HenryAssets/AsukaBundle/Animation/maskAimBazooka.mask
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matRipple.mat
+- Assets/HenryAssets/AsukaBundle/Materials/matAsukaNeo.mat
+- Assets/HenryAssets/AsukaBundle/Animation/maskAimPitch.mask
+- Assets/HenryAssets/AsukaBundle/Materials/matVergil.mat
+- Assets/HenryAssets/AsukaBundle/VFX/AsukaDustEffect.prefab
+- Assets/HenryAssets/AsukaBundle/Materials/matAsuka.mat
+- Assets/AsukaAssets/Icons/RMSBoostMetron.png
+- Assets/HenryAssets/AsukaBundle/Animation/clips/SprintL.anim
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matAnimeShapes.mat
+- Assets/HenryAssets/AsukaBundle/AsukaMonsterMaster.prefab
+- Assets/AsukaAssets/Projectiles/HowlingMetronProcessing.prefab
+- Assets/HenryAssets/AsukaBundle/Animation/animAsuka.controller
+- Assets/HenryAssets/AsukaBundle/Mesh/meshUzi.mesh
+- Assets/HenryAssets/AsukaBundle/Animation/clips/ThrowBomb.anim
+- Assets/HenryAssets/AsukaBundle/VFX/Textures/texEmbers.png
+- Assets/HenryAssets/AsukaBundle/VFX/Materials/matHitSparkPunch.mat
+- Assets/AsukaAssets/Icons/BitShiftMetron.png
+- Assets/HenryAssets/AsukaBundle/Animation/maskGesture.mask
+- Assets/HenryAssets/AsukaBundle/Animation/clips/MenuIdleIn.anim
+- Assets/HenryAssets/AsukaBundle/VFX/Textures/texAsukaSwing2.png
+- Assets/HenryAssets/AsukaBundle/Materials/matRoy.mat
+- Assets/HenryAssets/AsukaBundle/VFX/AsukaBazookaExplosionEffect.prefab
+- Assets/HenryAssets/AsukaBundle/VFX/Textures/texHitSpark.png
+- Assets/HenryAssets/AsukaBundle/VFX/Textures/texRipple.png
+- Assets/AsukaAssets/Icons/ManaRecover.png
 - Assets/HenryAssets/AsukaBundle/Animation/clips/LightImpact.anim
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matSmoke.mat
 - Assets/HenryAssets/AsukaBundle/Animation/clips/WalkF.anim
-- Assets/HenryAssets/AsukaBundle/Textures/texAsukaAlt.png
 - Assets/AsukaAssets/Icons/HowlingMetron.png
 - Assets/HenryAssets/AsukaBundle/Textures/texAsukaDante.png
 - Assets/HenryAssets/AsukaBundle/Textures/texAsukaJedi.png
 - Assets/HenryAssets/AsukaBundle/Icons/texScepterSpecialIcon.png
 - Assets/HenryAssets/AsukaBundle/VFX/Textures/texPunchImpactShadow.png
-- Assets/HenryAssets/AsukaBundle/Icons/texBazookaFireIcon.png
 - Assets/HenryAssets/AsukaBundle/Mesh/meshVergilCoat.mesh
 - Assets/HenryAssets/AsukaBundle/VFX/ImpactAsukaSlash.prefab
-- Assets/AsukaAssets/Icons/GravityRodShooting.png
-- Assets/AsukaAssets/Icons/ManaRecover.png
 - Assets/HenryAssets/AsukaBundle/Icons/texBazookaIcon.png
-- Assets/HenryAssets/AsukaBundle/VFX/ImpactAsukaPunch.prefab
-- Assets/HenryAssets/AsukaBundle/Animation/clips/AimYaw.anim
-- Assets/HenryAssets/AsukaBundle/Mesh/meshAsukaSword.mesh
-- Assets/HenryAssets/AsukaBundle/Icons/texDanteAchievement.png
-- Assets/AsukaAssets/Icons/ShootingAccelerate.png
+- Assets/AsukaAssets/Projectiles/DelayedHowling_Ghost.prefab
 Dependencies: []

@@ -21,22 +21,13 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             //Set our mana cost before we call base.OnEnter so if the mana cost is more than our current mana, we go into the failed cast state.
             ManaCost = 16;
-            base.OnEnter();
-            //Check to make sure our cast didn't fail. If it did we aren't able to do anything.
-            if (CastFailed)
-                return;
 
             aimRay = GetAimRay();
             fireTime = 0.21f / attackSpeedStat;
             hasFired = false;
             duration = baseDuration / attackSpeedStat;
 
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
+            base.OnEnter();
         }
 
         private void Fire()
@@ -53,7 +44,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     position = aimRay.origin,
                     crit = characterBody.RollCrit(),
                     rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
-                    projectilePrefab = AsukaAssets.HowlingMetron,
+                    projectilePrefab = AsukaAssets.BitShiftMetron,
                     speedOverride = 64,
                 };
 
@@ -65,24 +56,16 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             base.FixedUpdate();
 
-            if (CastFailed)
-                return;
-
-            if (fixedAge >= fireTime && !hasFired)
+            if (fixedAge >= fireTime && !hasFired && !CastFailed)
             {
                 Fire();
             }
 
-            if (fixedAge >= duration && hasFired)
+            if (fixedAge >= duration && (hasFired || CastFailed))
             {
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.Pain;
         }
     }
 }

@@ -7,7 +7,7 @@ using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class DelayedTardusMetron : BaseSkillState
+    internal class DelayedTardusMetron : BaseSpellState
     {
         private Ray aimRay;
         public float baseDuration = 0.39f;
@@ -19,17 +19,12 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override void OnEnter()
         {
-            base.OnEnter();
+            ManaCost = 12;
             aimRay = GetAimRay();
             fireTime = 0.21f / attackSpeedStat;
             hasFired = false;
             duration = baseDuration / attackSpeedStat;
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
+            base.OnEnter();
         }
 
         private void Fire()
@@ -45,7 +40,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     position = aimRay.origin,
                     crit = characterBody.RollCrit(),
                     rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
-                    projectilePrefab = AsukaAssets.HowlingMetron,
+                    projectilePrefab = AsukaAssets.DelayedTardusMetron,
                     speedOverride = 64,
                 };
 
@@ -56,22 +51,16 @@ namespace AsukaMod.Survivors.Asuka.Spells
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-
-            if (fixedAge >= fireTime && !hasFired)
+            if (fixedAge >= fireTime && !hasFired && !CastFailed)
             {
                 Fire();
             }
 
-            if (fixedAge >= duration && hasFired)
+            if (fixedAge >= duration && (hasFired || CastFailed))
             {
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.Pain;
         }
     }
 }

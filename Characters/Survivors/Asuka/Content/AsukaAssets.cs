@@ -3,11 +3,16 @@ using UnityEngine;
 using AsukaMod.Modules;
 using System;
 using RoR2.Projectile;
+using RoR2.UI;
+using UnityEngine.Networking;
+using R2API.Utils;
 
 namespace AsukaMod.Survivors.Asuka
 {
     public static class AsukaAssets
     {
+        //UI
+        public static GameObject ManaUI;
         // particle effects
         public static GameObject swordSwingEffect;
         public static GameObject swordHitImpactEffect;
@@ -20,17 +25,13 @@ namespace AsukaMod.Survivors.Asuka
         //projectiles
         public static GameObject bombProjectilePrefab;
 
-        //Spell Icons
-        //We wanna load these here because we do not wanna be reloading all of these every single time we load into a new map.
-
-
         //Basic cube metrons
         public static GameObject HowlingMetron;
         public static GameObject DelayedHowlingMetron;
         public static GameObject HowlingMetronMSProcessing;
         public static GameObject MetronArpeggio;
         public static GameObject DelayedTardusMetron;
-        public static GameObject BitShiftMetron; // How do we go about upgrading this? It would need to be slowly upgraded while the card is held, but dunno how to do that lol. Maybe some internal timer? But they need a timer per slot.
+        public static GameObject BitShiftMetron;
 
         private static AssetBundle _assetBundle;
 
@@ -38,6 +39,10 @@ namespace AsukaMod.Survivors.Asuka
         {
 
             _assetBundle = assetBundle;
+
+            ManaUI = _assetBundle.LoadAsset<GameObject>("AsukaManaUI");
+            ManaUI.transform.localScale = new Vector3(1, 1, 1);
+            ManaUI.GetComponent<ImageFillController>().fillScalar = 1;
 
             swordHitSoundEvent = Content.CreateAndAddNetworkSoundEventDef("AsukaSwordHit");
 
@@ -84,8 +89,7 @@ namespace AsukaMod.Survivors.Asuka
             CreateBombProjectile();
             Content.AddProjectilePrefab(bombProjectilePrefab);
 
-            CreateHowlingMetron();
-            Content.AddProjectilePrefab(HowlingMetron);
+            CreateMetrons();
         }
 
         private static void CreateBombProjectile()
@@ -115,26 +119,55 @@ namespace AsukaMod.Survivors.Asuka
             bombController.startSound = "";
         }
 
-        private static void CreateHowlingMetron()
+        private static void CreateMetrons()
         {
-            HowlingMetron = Asset.CloneProjectilePrefab("Bandit2ShivProjectile", "Howling Metron");
-
-            HowlingMetron.GetComponent<ProjectileDamage>().damageType = DamageType.Generic;
-
-            Rigidbody metronRigidBody = HowlingMetron.GetComponent<Rigidbody>();
-            if (!metronRigidBody)
+            HowlingMetron = _assetBundle.LoadAsset<GameObject>("HowlingMetron");
+            var networkIdentity = HowlingMetron.GetComponent<NetworkIdentity>();
+            if (networkIdentity)
             {
-                metronRigidBody = HowlingMetron.AddComponent<Rigidbody>();
+                networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("0176acd452adc181"));
             }
+            Content.AddProjectilePrefab(HowlingMetron);
 
-            ProjectileController metronController = HowlingMetron.GetComponent<ProjectileController>();
-            metronController.rigidbody = metronRigidBody;
-            metronController.rigidbody.useGravity = false;
-            metronController.procCoefficient = 1f;
+            DelayedHowlingMetron = _assetBundle.LoadAsset<GameObject>("DelayedHowlingMetron");
+            networkIdentity = DelayedHowlingMetron.GetComponent<NetworkIdentity>();
+            if (networkIdentity)
+            {
+                networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("0981acd452adc181"));
+            }
+            Content.AddProjectilePrefab(DelayedHowlingMetron);
 
-            //metronController.ghostPrefab = Asset.CreateProjectileGhostPrefab(_assetBundle, "mdlKnife");
+            HowlingMetronMSProcessing = _assetBundle.LoadAsset<GameObject>("HowlingMetronProcessing");
+            networkIdentity = HowlingMetronMSProcessing.GetComponent<NetworkIdentity>();
+            if (networkIdentity)
+            {
+                networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("0189acd452adc181"));
+            }
+            Content.AddProjectilePrefab(HowlingMetronMSProcessing);
 
-            UnityEngine.Object.Destroy(HowlingMetron.transform.GetChild(0).gameObject);
+            MetronArpeggio = _assetBundle.LoadAsset<GameObject>("SpaceCube");
+            networkIdentity = MetronArpeggio.GetComponent<NetworkIdentity>();
+            if (networkIdentity)
+            {
+                networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("9810acd452adc181"));
+            }
+            Content.AddProjectilePrefab(MetronArpeggio);
+
+            DelayedTardusMetron = _assetBundle.LoadAsset<GameObject>("DelayedTardus");
+            networkIdentity = DelayedTardusMetron.GetComponent<NetworkIdentity>();
+            if (networkIdentity)
+            {
+                networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("1980acd452adc181"));
+            }
+            Content.AddProjectilePrefab(DelayedTardusMetron);
+
+            BitShiftMetron = _assetBundle.LoadAsset<GameObject>("BitShiftMetron");
+            networkIdentity = BitShiftMetron.GetComponent<NetworkIdentity>();
+            if (networkIdentity)
+            {
+                networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("7610acd452adc181"));
+            }
+            Content.AddProjectilePrefab(BitShiftMetron);
         }
         #endregion projectiles
     }

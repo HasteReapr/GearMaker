@@ -7,7 +7,7 @@ using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class MetronArpeggio : BaseSkillState
+    internal class MetronArpeggio : BaseSpellState
     {
         private Ray aimRay;
         public float baseDuration = 1.5f;
@@ -19,17 +19,12 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override void OnEnter()
         {
-            base.OnEnter();
+            ManaCost = 24;
             aimRay = GetAimRay();
             fireTime = 0.21f / attackSpeedStat;
             hasFired = false;
             duration = baseDuration / attackSpeedStat;
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
+            base.OnEnter();
         }
 
         private void Fire()
@@ -45,10 +40,14 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     position = aimRay.origin,
                     crit = characterBody.RollCrit(),
                     rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
-                    projectilePrefab = AsukaAssets.HowlingMetron,
+                    projectilePrefab = AsukaAssets.MetronArpeggio, //Somehow make a little portal that spawns the 5 cubes in a little array, otherwise just a shotgun
                     speedOverride = 64,
                 };
 
+                ProjectileManager.instance.FireProjectile(info);
+                info.rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, -3f, 0);
+                ProjectileManager.instance.FireProjectile(info);
+                info.rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, 3f, 0);
                 ProjectileManager.instance.FireProjectile(info);
             }
         }
@@ -56,22 +55,16 @@ namespace AsukaMod.Survivors.Asuka.Spells
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-
-            if (fixedAge >= fireTime && !hasFired)
+            if (fixedAge >= fireTime && !hasFired && !CastFailed)
             {
                 Fire();
             }
 
-            if (fixedAge >= duration && hasFired)
+            if (fixedAge >= duration && (hasFired || CastFailed))
             {
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.Pain;
         }
     }
 }

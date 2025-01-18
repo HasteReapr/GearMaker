@@ -8,7 +8,7 @@ using AsukaMod.Survivors.Asuka.Components;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class ManaRegenInstant : BaseSkillState
+    internal class ManaRegenInstant : BaseSpellState
     {
         public float baseDuration = 0.39f;
         public float duration;
@@ -16,18 +16,13 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override void OnEnter()
         {
+            ManaCost = 4;
             base.OnEnter();
             duration = baseDuration / attackSpeedStat;
             if (isAuthority)
             {
                 characterBody.GetComponent<AsukaManaComponent>().AddMana(25);
             }
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
         }
 
         public override void FixedUpdate()
@@ -39,11 +34,6 @@ namespace AsukaMod.Survivors.Asuka.Spells
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.Pain;
         }
     }
 }

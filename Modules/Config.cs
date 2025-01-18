@@ -1,7 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using BepInEx.Configuration;
-using RiskOfOptions;
-using RiskOfOptions.Options;
 using UnityEngine;
 
 namespace AsukaMod.Modules
@@ -91,11 +89,11 @@ namespace AsukaMod.Modules
         //add risk of options dll to your project libs and uncomment this for a soft dependency
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static void TryRegisterOption<T>(ConfigEntry<T> entry, float min, float max, bool restartRequired)
-        {
+        {/*
             ModSettingsManager.AddOption(new KeyBindOption(punchSpellTrigger));
             ModSettingsManager.AddOption(new KeyBindOption(kickSpellTrigger));
             ModSettingsManager.AddOption(new KeyBindOption(slashSpellTrigger));
-            ModSettingsManager.AddOption(new KeyBindOption(heavySpellTrigger));
+            ModSettingsManager.AddOption(new KeyBindOption(heavySpellTrigger));*/
         }
 
         //Taken from https://github.com/ToastedOven/CustomEmotesAPI/blob/main/CustomEmotesAPI/CustomEmotesAPI/CustomEmotesAPI.cs

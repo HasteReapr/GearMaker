@@ -7,7 +7,7 @@ using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class BookmarkAuto : BaseSkillState
+    internal class BookmarkAuto : BaseSpellState
     {
         public float baseDuration = 0.29f;
         public float duration;
@@ -15,15 +15,10 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override void OnEnter()
         {
+            ManaCost = 8;
             base.OnEnter();
             duration = baseDuration / attackSpeedStat;
-            characterBody.AddTimedBuff(AsukaBuffs.bookmarkAuto, 5);
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
+            characterBody.AddTimedBuff(AsukaBuffs.bookmarkAuto, 10);
         }
 
         public override void FixedUpdate()
@@ -35,11 +30,6 @@ namespace AsukaMod.Survivors.Asuka.Spells
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.Pain;
         }
     }
 }

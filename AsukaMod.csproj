@@ -52,8 +52,8 @@
 	  <Reference Include="R2API.Loadout">
 	    <HintPath>lib\R2API.Loadout.dll</HintPath>
 	  </Reference>
-	  <Reference Include="RiskOfOptions">
-	    <HintPath>lib\RiskOfOptions.dll</HintPath>
+	  <Reference Include="R2API.Skills">
+	    <HintPath>lib\R2API.Skills.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

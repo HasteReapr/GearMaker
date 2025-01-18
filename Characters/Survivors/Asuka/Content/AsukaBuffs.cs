@@ -10,6 +10,7 @@ namespace AsukaMod.Survivors.Asuka
         public static BuffDef reduceManaCost; // Reduce Mana Cost
         public static BuffDef manaRegenCont; // Mana Regeneration Continuious
         public static BuffDef bookmarkAuto; // Mana Regeneration Continuious
+        public static BuffDef recycleBuff; // Sampler 404
 
         public static void Init(AssetBundle assetBundle)
         {

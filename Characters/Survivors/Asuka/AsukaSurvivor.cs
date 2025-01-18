@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using ExtraSkillSlots;
 using AsukaMod.Survivors.Asuka.Spells;
-using R2API.Utils;
 
 namespace AsukaMod.Survivors.Asuka
 {
@@ -227,21 +226,18 @@ namespace AsukaMod.Survivors.Asuka
 
             //the primary skill is created using a constructor for a typical primary
             //it is also a SteppedSkillDef. Custom Skilldefs are very useful for custom behaviors related to casting a skill. see ror2's different skilldefs for reference
-            SteppedSkillDef primarySkillDef1 = Skills.CreateSkillDef<SteppedSkillDef>(new SkillDefInfo
+            SkillDef primarySkillDef = Skills.CreateSkillDef<SkillDef>(new SkillDefInfo
                 (
                     "AsukaBook",
                     Asuka_PREFIX + "PRIMARY_BOOK_NAME",
                     Asuka_PREFIX + "PRIMARY_BOOK_DESCRIPTION",
                     assetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
-                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.BookFire)),
+                    new EntityStates.SerializableEntityStateType(typeof(BookFire)),
                     "Weapon",
                     true
                 ));
-            //custom Skilldefs can have additional fields that you can set manually
-            primarySkillDef1.stepCount = 2;
-            primarySkillDef1.stepGraceDuration = 0.5f;
 
-            Skills.AddPrimarySkills(bodyPrefab, primarySkillDef1);
+            Skills.AddPrimarySkills(bodyPrefab, primarySkillDef);
         }
 
         private void AddSecondarySkills()
@@ -249,39 +245,39 @@ namespace AsukaMod.Survivors.Asuka
             Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
 
             //here is a basic skill def with all fields accounted for
-            SkillDef secondarySkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef secondarySkillDef = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "AsukaGun",
-                skillNameToken = Asuka_PREFIX + "SECONDARY_GUN_NAME",
-                skillDescriptionToken = Asuka_PREFIX + "SECONDARY_GUN_DESCRIPTION",
+                skillName = "AsukaBookmarkSpells",
+                skillNameToken = Asuka_PREFIX + "SECONDARY_BOOKMARK_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SECONDARY_BOOKMARK_DESCRIPTION",
                 keywordTokens = new string[] { "KEYWORD_AGILE" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.BookFire)),
-                activationStateMachineName = "Weapon2",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
+                activationState = new EntityStates.SerializableEntityStateType(typeof(Bookmark)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.Pain,
 
-                baseRechargeInterval = 1f,
+                baseRechargeInterval = 0,
                 baseMaxStock = 1,
 
                 rechargeStock = 1,
                 requiredStock = 1,
-                stockToConsume = 1,
+                stockToConsume = 0,
 
                 resetCooldownTimerOnUse = false,
                 fullRestockOnAssign = true,
                 dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
+                mustKeyPress = true,
                 beginSkillCooldownOnSkillEnd = false,
 
-                isCombatSkill = true,
+                isCombatSkill = false,
                 canceledFromSprinting = false,
                 cancelSprintingOnActivation = false,
                 forceSprintDuringState = false,
 
             });
 
-            Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef1);
+            Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef);
         }
 
         private void AddUtiitySkills()
@@ -291,21 +287,21 @@ namespace AsukaMod.Survivors.Asuka
             //here's a skilldef of a typical movement skill.
             SkillDef utilitySkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "AsukaRoll",
-                skillNameToken = Asuka_PREFIX + "UTILITY_ROLL_NAME",
-                skillDescriptionToken = Asuka_PREFIX + "UTILITY_ROLL_DESCRIPTION",
+                skillName = "AsukaDeckCycle",
+                skillNameToken = Asuka_PREFIX + "UTILITY_DECKSWAP_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "UTILITY_DECKSWAP_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(Roll)),
-                activationStateMachineName = "Body",
-                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SwapTestCase)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.Pain,
 
-                baseRechargeInterval = 4f,
+                baseRechargeInterval = 0f,
                 baseMaxStock = 1,
 
                 rechargeStock = 1,
                 requiredStock = 1,
-                stockToConsume = 1,
+                stockToConsume = 0,
 
                 resetCooldownTimerOnUse = false,
                 fullRestockOnAssign = true,
@@ -316,7 +312,7 @@ namespace AsukaMod.Survivors.Asuka
                 isCombatSkill = false,
                 canceledFromSprinting = false,
                 cancelSprintingOnActivation = false,
-                forceSprintDuringState = true,
+                forceSprintDuringState = false,
             });
 
             Skills.AddUtilitySkills(bodyPrefab, utilitySkillDef1);
@@ -326,23 +322,26 @@ namespace AsukaMod.Survivors.Asuka
         {
             Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
 
-            //a basic skill. some fields are omitted and will just have default values
             SkillDef specialSkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "AsukaBomb",
-                skillNameToken = Asuka_PREFIX + "SPECIAL_BOMB_NAME",
-                skillDescriptionToken = Asuka_PREFIX + "SPECIAL_BOMB_DESCRIPTION",
+                skillName = "AsukaManaRecover",
+                skillNameToken = Asuka_PREFIX + "SPECIAL_RECOVER_MANA_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPECIAL_RECOVER_MANA_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),
-                //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
-                activationStateMachineName = "Weapon2", interruptPriority = EntityStates.InterruptPriority.Skill,
+                activationState = new EntityStates.SerializableEntityStateType(typeof(RecoverMana)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.Pain,
 
+                baseRechargeInterval = 0,
                 baseMaxStock = 1,
-                baseRechargeInterval = 10f,
 
-                isCombatSkill = true,
-                mustKeyPress = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 0,
+
+                isCombatSkill = false,
+                mustKeyPress = true,
             });
 
             Skills.AddSpecialSkills(bodyPrefab, specialSkillDef1);
@@ -362,42 +361,20 @@ namespace AsukaMod.Survivors.Asuka
 
             Content.AddSkillFamily(spellSkillFamily);
 
-            //Adding new GenericSkill component to character prefab
-            var SpellGenericSkillA = bodyPrefab.AddComponent<GenericSkill>();
-            SpellGenericSkillA._skillFamily = spellSkillFamily;
-            SpellGenericSkillA.hideInCharacterSelect = true;
-
-            var SpellGenericSkillB = bodyPrefab.AddComponent<GenericSkill>();
-            SpellGenericSkillB._skillFamily = spellSkillFamily;
-            SpellGenericSkillB.hideInCharacterSelect = true;
-
-            var SpellGenericSkillC = bodyPrefab.AddComponent<GenericSkill>();
-            SpellGenericSkillC._skillFamily = spellSkillFamily;
-            SpellGenericSkillC.hideInCharacterSelect = true;
-
-            var SpellGenericSkillD = bodyPrefab.AddComponent<GenericSkill>();
-            SpellGenericSkillD._skillFamily = spellSkillFamily;
-            SpellGenericSkillD.hideInCharacterSelect = true;
-
-            exSkillLoc.extraFirst = SpellGenericSkillA;
-            exSkillLoc.extraSecond = SpellGenericSkillB;
-            exSkillLoc.extraThird = SpellGenericSkillC;
-            exSkillLoc.extraFourth = SpellGenericSkillD;
-
             emptySpell = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "EmptySpell",
                 skillNameToken = Asuka_PREFIX + "SPELL_EMPTY_NAME",
                 skillDescriptionToken = Asuka_PREFIX + "SPELL_EMPTY_DESCRIPTION",
-                skillIcon = assetBundle.LoadAsset<Sprite>("BookmarkFullImport"),
+                skillIcon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(BaseSpellState)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EmptySpell)),
                 //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
                 activationStateMachineName = "Weapon",
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 5f,
+                baseRechargeInterval = 0f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -416,7 +393,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -434,7 +411,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -452,7 +429,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -470,7 +447,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -488,7 +465,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
@@ -506,13 +483,15 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 fullRestockOnAssign = false,
-                baseMaxStock = 5,
+                requiredStock = 0,
+                baseMaxStock = 4,
                 baseRechargeInterval = 5f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,
             });
             SpellSkills.Add("BitShiftMetron", bitShiftMetron);
+
             SkillDef goToMarker = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "goToMarker",
@@ -521,16 +500,52 @@ namespace AsukaMod.Survivors.Asuka
                 skillIcon = assetBundle.LoadAsset<Sprite>("goToMarker"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(GoToMarker)),
-                activationStateMachineName = "Body",
+                activationStateMachineName = "Weapon",
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = false,
                 mustKeyPress = false,
             });
             SpellSkills.Add("GoToMarker", goToMarker);
+            SkillDef sampler404 = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "Sampler404",
+                skillNameToken = Asuka_PREFIX + "SPELL_SAMPLER_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_SAMPLER_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("Sampler404"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(Sampler404)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 1f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("Sampler404", sampler404);
+            SkillDef chaoticOption = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "chaoticOption",
+                skillNameToken = Asuka_PREFIX + "SPELL_CHAOTIC_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_CHAOTIC_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("ChaoticOption"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(ChaoticOption)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 1f,
+
+                isCombatSkill = false,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("ChaoticOption", chaoticOption);
 
             SkillDef reduceMana = Skills.CreateSkillDef(new SkillDefInfo
             {
@@ -544,7 +559,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -562,7 +577,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -580,7 +595,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -599,7 +614,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -617,7 +632,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -635,7 +650,7 @@ namespace AsukaMod.Survivors.Asuka
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseMaxStock = 1,
-                baseRechargeInterval = 0f,
+                baseRechargeInterval = 1f,
 
                 isCombatSkill = false,
                 mustKeyPress = false,
@@ -644,8 +659,8 @@ namespace AsukaMod.Survivors.Asuka
 
             Skills.AddSkillToFamily(spellSkillFamily, emptySpell);
 
-
             GenericSkill passiveGenericSkill = Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
+            passiveGenericSkill.SetLoadoutTitleTokenOverride("Spells");
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, emptySpell);
 
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, howlingMetron);
@@ -654,7 +669,10 @@ namespace AsukaMod.Survivors.Asuka
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, delayedTardusMetron);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, arpeggioMetron);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bitShiftMetron);
+
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, goToMarker);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, sampler404);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, chaoticOption);
 
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, reduceMana);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, recoverMana);
@@ -663,6 +681,32 @@ namespace AsukaMod.Survivors.Asuka
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bookmarkFull);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bookmarkRand);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bookmarkAuto);
+
+            //Adding new GenericSkill component to character prefab
+            var SpellGenericSkillA = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillA._skillFamily = spellSkillFamily;
+            SpellGenericSkillA.hideInCharacterSelect = true;
+            SpellGenericSkillA.SetHideInLoadout(true);
+
+            var SpellGenericSkillB = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillB._skillFamily = spellSkillFamily;
+            SpellGenericSkillB.hideInCharacterSelect = true;
+            SpellGenericSkillB.SetHideInLoadout(true);
+
+            var SpellGenericSkillC = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillC._skillFamily = spellSkillFamily;
+            SpellGenericSkillC.hideInCharacterSelect = true;
+            SpellGenericSkillC.SetHideInLoadout(true);
+
+            var SpellGenericSkillD = bodyPrefab.AddComponent<GenericSkill>();
+            SpellGenericSkillD._skillFamily = spellSkillFamily;
+            SpellGenericSkillD.hideInCharacterSelect = true;
+            SpellGenericSkillD.SetHideInLoadout(true);
+
+            exSkillLoc.extraFirst = SpellGenericSkillA;
+            exSkillLoc.extraSecond = SpellGenericSkillB;
+            exSkillLoc.extraThird = SpellGenericSkillC;
+            exSkillLoc.extraFourth = SpellGenericSkillD;
         }
         #endregion skills
 

@@ -5,6 +5,7 @@ using RoR2;
 using UnityEngine;
 using RoR2.Projectile;
 using AsukaMod.Survivors.Asuka.Components;
+using ExtraSkillSlots;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
@@ -15,42 +16,58 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public float ManaCost = 0;
         public bool CastFailed = false;
+        public AsukaManaComponent manaComp;
+
+        private ExtraSkillLocator extraSkillLocator;
 
         public override void OnEnter()
         {
             base.OnEnter();
+            manaComp = GetComponent<AsukaManaComponent>();
+            extraSkillLocator = outer.GetComponent<ExtraSkillLocator>();
 
             //If our current mana is less than our mana cost, we do our fail cast animation.
-            if(GetComponent<AsukaManaComponent>().mana < ManaCost)
+            if (ManaCost < manaComp.mana)
+            {
+                manaComp.AddMana(-ManaCost);
+            }
+            else
             {
                 CastFailed = true;
                 duration = 1.5f / attackSpeedStat; //We divide by the attack speed stat so it's less punishing to try and cast a spell without enough mana later in the run.
             }
-            else
+        }
+
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+            if(fixedAge > 0.75f)
             {
-                GetComponent<AsukaManaComponent>().AddMana(-ManaCost);
+                outer.SetNextStateToMain();
             }
         }
 
         public override void OnExit()
         {
             base.OnExit();
-        }
-
-        public override void FixedUpdate()
-        {
-            base.FixedUpdate();
-
-            if (fixedAge >= duration)
+            if (!CastFailed)
             {
-                outer.SetNextStateToMain();
-                return;
+                //If we have the Sampler 404 buff we don't discard, and remove the buff.
+                if (HasBuff(AsukaBuffs.recycleBuff))
+                {
+                    characterBody.RemoveBuff(AsukaBuffs.recycleBuff);
+                }
+                else
+                    manaComp.DiscardFromHand(activatorSkillSlot);
+
+                if (HasBuff(AsukaBuffs.bookmarkAuto))
+                    manaComp.DrawIntoHand(activatorSkillSlot);
             }
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Pain;
+            return InterruptPriority.PrioritySkill;
         }
     }
 }

@@ -7,7 +7,7 @@ using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class GoToMarker : BaseSkillState
+    internal class GoToMarker : BaseSpellState
     {
         //This is an uninteruptible teleport skill, just like huntress blink again, lol.
         private Ray aimRay;
@@ -17,41 +17,43 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         private Transform modelTransform;
         public static GameObject blinkPrefab;
-        public float spdCoef = 25f;
-        public string beginSoundString;
-        public string endSoundString;
+        public float spdCoef = 120;
 
         private CharacterModel characterModel;
         private HurtBoxGroup hurtboxGroup;
-        private HurtBoxGroup hurtboxGroupTransform;
         private float stopwatch;
         private Vector3 blinkVector = Vector3.zero;
 
         public override void OnEnter()
         {
+            ManaCost = 8;
             base.OnEnter();
-            aimRay = GetAimRay();
-            duration = baseDuration / moveSpeedStat;
 
-            modelTransform = GetModelTransform();
-            if (modelTransform)
+            if (!CastFailed)
             {
-                characterModel = modelTransform.GetComponent<CharacterModel>();
-                hurtboxGroup = modelTransform.GetComponent<HurtBoxGroup>();
-            }
-            if (characterModel)
-            {
-                characterModel.invisibilityCount++;
-            }
-            if (hurtboxGroup)
-            {
-                HurtBoxGroup hbg = hurtboxGroup;
-                int hbDeactivatorCounter = hbg.hurtBoxesDeactivatorCounter + 1;
-                hbg.hurtBoxesDeactivatorCounter = hbDeactivatorCounter;
-            }
-            blinkVector = GetBlinkVector();
+                aimRay = GetAimRay();
+                duration = baseDuration / moveSpeedStat;
 
-            Util.PlaySound("Play_huntress_shift_start", gameObject);
+                modelTransform = GetModelTransform();
+                if (modelTransform)
+                {
+                    characterModel = modelTransform.GetComponent<CharacterModel>();
+                    hurtboxGroup = modelTransform.GetComponent<HurtBoxGroup>();
+                }
+                if (characterModel)
+                {
+                    characterModel.invisibilityCount++;
+                }
+                if (hurtboxGroup)
+                {
+                    HurtBoxGroup hbg = hurtboxGroup;
+                    int hbDeactivatorCounter = hbg.hurtBoxesDeactivatorCounter + 1;
+                    hbg.hurtBoxesDeactivatorCounter = hbDeactivatorCounter;
+                }
+                blinkVector = GetBlinkVector();
+
+                Util.PlaySound("Play_huntress_shift_start", gameObject);
+            }
         }
 
         public override void OnExit()
@@ -73,8 +75,12 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
             Util.PlaySound("Play_huntress_shift_end", gameObject);
 
-            base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
+            if (!CastFailed)
+            {
+                manaComp.DiscardFromHand(activatorSkillSlot);
+                if (HasBuff(AsukaBuffs.bookmarkAuto))
+                    manaComp.DrawIntoHand(activatorSkillSlot);
+            }
         }
 
         public override void FixedUpdate()
@@ -97,7 +103,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         private Vector3 GetBlinkVector()
         {
-            return ((inputBank.moveVector == Vector3.zero) ? characterDirection.forward : inputBank.moveVector).normalized;
+            return (inputBank.moveVector == Vector3.zero) ? inputBank.aimDirection : inputBank.moveVector.normalized;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

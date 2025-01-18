@@ -28,12 +28,6 @@ namespace AsukaMod.Survivors.Asuka.Components
         EntityStateMachine[] stateMachines;
         ExtraSkillLocator exSkillLoc;
 
-        public bool isExecutingSkill = false;
-        public bool isCheckingInput = false;
-
-        public float isCheckingInputTimer = 0f;
-        public float isExecutingInputTimer = 0f;
-
         internal enum HandNum : int
         {
             PUNCH = 0,
@@ -54,25 +48,25 @@ namespace AsukaMod.Survivors.Asuka.Components
         public List<SkillDef> deckC;
         private List<int> drawnSkillIndiciesC = new List<int>();
 
-        private bool initialDeck = true;
+        private float hurtTimer = 0; //used for the initial 1 second pause
+        private float hurtTimer2 = 0; //used for the drain after the 1 second pause
+        private float hurtHold = 0;
         
         //Mana information
         public float minMana = 0;
         public float maxMana = 100;
-        public float mpsInCombat = 0.5f; //mps is short for Mana Per Second.
-        public float mpsOutOfCombat = 1f;
-        public float mpsWhileRegen = 5f;
-        public float mpsRecoverContinous = 18f; // Recover Mana Continous buff.
-        public float manaGainedInstant = 50; // Recover Mana Instant. Doesn't consume cards, and just recovers your mana.
+        public float passiveManaRegen = 1f;
+        public float mpsWhileRegen = 15f;
+        public float mpsRecoverContinous = 24f; // Recover Mana Continous buff.
+        public float manaGainedInstant = 30; // Recover Mana Instant. Doesn't consume cards, and just recovers your mana.
         public float manaGainedOnKill = 2f;
         public float manaLostOnHitMult = 0.125f; //this is a multiplier for the damage, incoming damage gets multiplied by this and this is how much mana you lose. So if you took 10 damage you lose 1 mana.
 
         //Mana UI Stuff
-        [SerializeField]
-        [Header("UI")]
-        public GameObject cardOverlay;
+        public GameObject manaBarUI;
         public string cardOverlayChildLocStr;
-        private ChildLocator cardOverlayerChildLoc;
+        private OverlayController manaOverlayCTRL;
+        private List<ImageFillController> fillUiList = new List<ImageFillController>();
 
         //Real Mana Values
         [SyncVar(hook = "OnManaModified")]
@@ -150,7 +144,46 @@ namespace AsukaMod.Survivors.Asuka.Components
             if (charBody.HasBuff(AsukaBuffs.manaDefBuff) && amount < 0) //the <0 bit is because we use AddMana(-skillCost) to remove mana, instead of using a seperate function, so if it is less than 0 it is expending mana.
                 amount *= 0.5f;
 
+            if(amount < 0)
+            {
+                hurtTimer = 1f;
+                hurtTimer2 = 1f;
+                hurtHold = this.mana + amount;
+            }
+
             this.Network_Mana = Mathf.Clamp(this.mana + amount, 0, maxMana);
+        }
+
+        private void OnEnable()
+        {
+            OverlayCreationParams manaUICreationParams = new OverlayCreationParams
+            {
+                prefab = AsukaAssets.ManaUI,
+                childLocatorEntry = "BottomLeftCluster"
+            };
+            manaOverlayCTRL = HudOverlayManager.AddOverlay(gameObject, manaUICreationParams);
+            manaOverlayCTRL.onInstanceAdded += OnManaOverlayAdded;
+            manaOverlayCTRL.onInstanceRemove += OnManaOverlayRemoved;
+        }
+
+        private void OnDisable()
+        {
+            if(manaOverlayCTRL != null)
+            {
+                manaOverlayCTRL.onInstanceAdded -= OnManaOverlayAdded;
+                manaOverlayCTRL.onInstanceRemove -= OnManaOverlayRemoved;
+                fillUiList.Clear();
+                HudOverlayManager.RemoveOverlay(manaOverlayCTRL);
+            }
+        }
+        private void OnManaOverlayAdded(OverlayController controller, GameObject instance)
+        {
+            fillUiList.Add(instance.GetComponent<ImageFillController>());
+        }
+
+        private void OnManaOverlayRemoved(OverlayController controller, GameObject instance)
+        {
+            fillUiList.Remove(instance.GetComponent<ImageFillController>());
         }
 
         public void Start()
@@ -159,22 +192,18 @@ namespace AsukaMod.Survivors.Asuka.Components
             exSkillLoc = gameObject.GetComponent<ExtraSkillLocator>();
             stateMachines = gameObject.GetComponents<EntityStateMachine>();
 
-            charMaster = charBody.master;
-        }
+            //Populate and setup the decks in the arrays first, for easier tracking.
+            PopulateDecks();
 
-        //finally we get into the meat of this component lol
-        public void OnEnable()
-        {
             //Check for a character body
             if (charBody != null)
             {
-                //Populate and setup the decks in the arrays first, for easier tracking.
-                PopulateDecks();
-                
                 //We give Asuka the defense buff when we spawn in. This buff gets removed when you run out of mana.
                 charBody.AddBuff(AsukaBuffs.manaDefBuff);
 
-                InitHand();
+                AddMana(100);
+
+                DrawFullHand();
             }
         }
 
@@ -189,26 +218,34 @@ namespace AsukaMod.Survivors.Asuka.Components
             {
                 AddMana(mpsRecoverContinous * Time.fixedDeltaTime);
             }
+            AddMana(passiveManaRegen * Time.fixedDeltaTime);
+
+            foreach (ImageFillController imageFillController in fillUiList)
+            {
+                imageFillController.SetTValue(mana / maxMana);
+            }
+
+            hurtTimer -= Time.deltaTime;
+            if (hurtTimer <= 0)
+            {
+                hurtTimer2 -= Time.deltaTime;
+            }
+
+            
+
+            hurtHold = Mathf.Lerp(hurtHold, _mana, hurtTimer2);
+
+            //Log.Message($"Mana {mana}");
         }
 
-        private void InitHand()
-        {
-            //Reset on Start.
-            if (initialDeck)
-            {
-                drawnSkillIndiciesA.Clear();
-                initialDeck = false;
-            }
-            DrawFullHand();
-        }
 
         //Full draw, used for Bookmark Random Import, and initializing.
         public void DrawFullHand()
         {
-            DrawIntoHand((int)HandNum.PUNCH);
-            DrawIntoHand((int)HandNum.KICK);
-            DrawIntoHand((int)HandNum.SLASH);
-            DrawIntoHand((int)HandNum.HEAVY);
+            DrawIntoHand(0);
+            DrawIntoHand(1);
+            DrawIntoHand(2);
+            DrawIntoHand(3);
         }
 
         //Bookmark grab
@@ -237,15 +274,43 @@ namespace AsukaMod.Survivors.Asuka.Components
         public void DrawIntoHand(int handIndex)
         {
             GenericSkill hand = GetHandByIndex(handIndex);
+
             if (hand.skillDef != emptySpell)
             {
                 //If our hand isn't empty then return, since we can't draw into a occupied hand
                 return;
             }
             //If our hand is actually empty we draw a card
-            SkillDef DrawnCard = DrawSkillDef(SelectedDeck);
+            SkillDef drawnCard = DrawSkillDef(SelectedDeck);
             //then replace our skill
-            hand.SetSkillOverride(gameObject, DrawnCard, GenericSkill.SkillOverridePriority.Contextual);            
+            hand.SetSkillOverride(gameObject, drawnCard, GenericSkill.SkillOverridePriority.Contextual);            
+        }
+
+        public void DrawIntoHand(GenericSkill hand)
+        {
+            if (hand.skillDef != emptySpell)
+            {
+                //If our hand isn't empty then return, since we can't draw into a occupied hand
+                return;
+            }
+            //If our hand is actually empty we draw a card
+            SkillDef drawnCard = DrawSkillDef(SelectedDeck);
+            //then replace our skill
+            hand.SetSkillOverride(gameObject, drawnCard, GenericSkill.SkillOverridePriority.Contextual);            
+        }
+        
+        public bool DrawIntoHand(GenericSkill hand, int unused = 0)
+        {
+            if (hand.skillDef != emptySpell)
+            {
+                //If our hand isn't empty then return, since we can't draw into a occupied hand
+                return false;
+            }
+            //If our hand is actually empty we draw a card
+            SkillDef drawnCard = DrawSkillDef(SelectedDeck);
+            //then replace our skill
+            hand.SetSkillOverride(gameObject, drawnCard, GenericSkill.SkillOverridePriority.Contextual);
+            return true;
         }
 
         //Bookmark remove
@@ -255,21 +320,40 @@ namespace AsukaMod.Survivors.Asuka.Components
             if(hand != null)
             {
                 //Discard the hand.
-                hand.UnsetSkillOverride(gameObject, hand.skillDef, GenericSkill.SkillOverridePriority.Replacement);
+                hand.UnsetSkillOverride(gameObject, hand.skillDef, GenericSkill.SkillOverridePriority.Contextual);
             }
+        }
+        
+        //This one is called from the Skills
+        public void DiscardFromHand(GenericSkill hand)
+        {
+            if(hand != null)
+            {
+                //Discard the hand.
+                hand.UnsetSkillOverride(gameObject, hand.skillDef, GenericSkill.SkillOverridePriority.Contextual);
+            }
+        }
+
+        public void TryDrawDiscard(GenericSkill hand)
+        {
+            //We try to draw into our hand, but if the hand is not empty it will return.
+            if(DrawIntoHand(hand, 0)) { return; }
+
+            //If this fails we discard.
+            DiscardFromHand(hand);
         }
 
         private GenericSkill GetHandByIndex(int handIndex)
         {
             switch (handIndex)
             {
-                case 1:
+                case 0:
                     return exSkillLoc.extraFirst;
-                case 2:
+                case 1:
                     return exSkillLoc.extraSecond;
-                case 3:
+                case 2:
                     return exSkillLoc.extraThird;
-                case 4:
+                case 3:
                     return exSkillLoc.extraFourth;
                 default:
                     return null;
@@ -283,9 +367,9 @@ namespace AsukaMod.Survivors.Asuka.Components
                 case 0:
                     return deckA;
                 case 1:
-                    return deckA;
+                    return deckB;
                 case 2:
-                    return deckA;
+                    return deckC;
                 default:
                     return null;
             }
@@ -321,6 +405,7 @@ namespace AsukaMod.Survivors.Asuka.Components
                 deckA.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("DelayedHowlingMetron"));
             for(int i = 0; i < 5; i++)
                 deckA.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("HowlingMSProcess"));
+            
 
             deckB = new List<SkillDef>();
 
@@ -338,6 +423,8 @@ namespace AsukaMod.Survivors.Asuka.Components
                 deckB.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("DelayedTardusMetron"));
             for (int i = 0; i < 2; i++)
                 deckB.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("BitShiftMetron"));
+
+            deckB.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("ChaoticOption"));
 
             deckC = new List<SkillDef>();
 
@@ -359,6 +446,9 @@ namespace AsukaMod.Survivors.Asuka.Components
                 deckC.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("BitShiftMetron"));
             for (int i = 0; i < 4; i++)
                 deckC.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("GoToMarker"));
+
+            deckC.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("Sampler404"));
+            deckC.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("ChaoticOption"));
         }
     }
 }

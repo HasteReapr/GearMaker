@@ -9,11 +9,11 @@ namespace AsukaMod.Survivors.Asuka
         {
             Modules.Content.AddEntityState(typeof(BookFire));
 
-            Modules.Content.AddEntityState(typeof(SlashCombo));
+            Modules.Content.AddEntityState(typeof(Bookmark));
 
-            Modules.Content.AddEntityState(typeof(Roll));
+            Modules.Content.AddEntityState(typeof(SwapTestCase));
 
-            Modules.Content.AddEntityState(typeof(ThrowBomb));
+            Modules.Content.AddEntityState(typeof(RecoverMana));
 
             Modules.Content.AddEntityState(typeof(BaseSpellState));
             Modules.Content.AddEntityState(typeof(HowlingMetron));
@@ -22,10 +22,13 @@ namespace AsukaMod.Survivors.Asuka
             Modules.Content.AddEntityState(typeof(BitShiftMetron));
             Modules.Content.AddEntityState(typeof(MetronArpeggio));
             Modules.Content.AddEntityState(typeof(DelayedTardusMetron));
+
             Modules.Content.AddEntityState(typeof(GoToMarker));
+
             Modules.Content.AddEntityState(typeof(ManaRegenCont));
             Modules.Content.AddEntityState(typeof(ManaRegenInstant));
             Modules.Content.AddEntityState(typeof(ReduceManaCost));
+
             Modules.Content.AddEntityState(typeof(BookmarkAuto));
             Modules.Content.AddEntityState(typeof(BookmarkFull));
             Modules.Content.AddEntityState(typeof(BookmarkRandom));

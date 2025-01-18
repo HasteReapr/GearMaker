@@ -7,7 +7,7 @@ using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Spells
 {
-    internal class HowlingMSProcess : BaseSkillState
+    internal class HowlingMSProcess : BaseSpellState
     {
         private Ray aimRay;
         public float baseDuration = 0.49f;
@@ -19,17 +19,12 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override void OnEnter()
         {
-            base.OnEnter();
+            ManaCost = 16;
             aimRay = GetAimRay();
             fireTime = 0.21f / attackSpeedStat;
             hasFired = false;
             duration = baseDuration / attackSpeedStat;
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            //Here we unset the skill override, so it should default to the "empty" card slot.
+            base.OnEnter();
         }
 
         private void Fire()
@@ -45,7 +40,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     position = aimRay.origin,
                     crit = characterBody.RollCrit(),
                     rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
-                    projectilePrefab = AsukaAssets.HowlingMetron,
+                    projectilePrefab = AsukaAssets.HowlingMetronMSProcessing,
                     speedOverride = 128,
                 };
 
@@ -56,8 +51,8 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     force = 0,
                     position = aimRay.origin,
                     crit = characterBody.RollCrit(),
-                    rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, -1f, 0),
-                    projectilePrefab = AsukaAssets.HowlingMetron,
+                    rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, -3f, 0),
+                    projectilePrefab = AsukaAssets.HowlingMetronMSProcessing,
                     speedOverride = 128,
                 };
 
@@ -68,8 +63,8 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     force = 0,
                     position = aimRay.origin,
                     crit = characterBody.RollCrit(),
-                    rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, 1f, 0),
-                    projectilePrefab = AsukaAssets.HowlingMetron,
+                    rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, 3f, 0),
+                    projectilePrefab = AsukaAssets.HowlingMetronMSProcessing,
                     speedOverride = 128,
                 };
 
@@ -82,22 +77,16 @@ namespace AsukaMod.Survivors.Asuka.Spells
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-
-            if (fixedAge >= fireTime && !hasFired)
+            if (fixedAge >= fireTime && !hasFired && !CastFailed)
             {
                 Fire();
             }
 
-            if (fixedAge >= duration && hasFired)
+            if (fixedAge >= duration && (hasFired || CastFailed))
             {
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.Pain;
         }
     }
 }

@@ -18,7 +18,6 @@ namespace AsukaMod.Survivors.Asuka.Spells
             ManaCost = 8;
             base.OnEnter();
             duration = baseDuration / attackSpeedStat;
-            characterBody.AddTimedBuff(AsukaBuffs.bookmarkAuto, 10);
         }
 
         public override void FixedUpdate()
@@ -29,6 +28,17 @@ namespace AsukaMod.Survivors.Asuka.Spells
             {
                 outer.SetNextStateToMain();
                 return;
+            }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            if (!CastFailed)
+            {
+                manaComp.DiscardFromHand(activatorSkillSlot);
+
+                manaComp.DrawIntoHand(activatorSkillSlot);
             }
         }
     }

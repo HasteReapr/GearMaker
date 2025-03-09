@@ -30,6 +30,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
         private void Fire()
         {
             hasFired = true;
+            canOverride = true;
             if (isAuthority)
             {
                 FireProjectileInfo info = new FireProjectileInfo()

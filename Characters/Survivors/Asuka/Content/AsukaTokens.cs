@@ -21,7 +21,7 @@ namespace AsukaMod.Survivors.Asuka
             string prefix = AsukaSurvivor.Asuka_PREFIX;
 
             string desc = "The Gear Maker is a powerful mage wielding the power of the Tome of Origin.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine
-             + "< ! > Sword is a good all-rounder while Boxing Gloves are better for laying a beatdown on more powerful foes." + Environment.NewLine + Environment.NewLine
+             + "< ! > The Tome of Origin is good to use for cover fire while you're regenerating mana, or running away from enemies." + Environment.NewLine + Environment.NewLine
              + "< ! > Bookmark is a channeled ability. Hold down secondary and press a corresponding spell slot to draw or discard in the designated slot." + Environment.NewLine + Environment.NewLine
              + "< ! > The Gear Maker has three decks to choose from, each offering a wide array of unique spells at your disposal." + Environment.NewLine + Environment.NewLine
              + "< ! > Recover Mana has a set minimum duration so you will always recover at least 10 mana." + Environment.NewLine + Environment.NewLine;
@@ -37,7 +37,7 @@ namespace AsukaMod.Survivors.Asuka
             Language.Add(prefix + "OUTRO_FAILURE", outroFailure);
 
             #region Skins
-            Language.Add(prefix + "MASTERY_SKIN_NAME", "Alternate");
+            Language.Add(prefix + "MASTERY_SKIN_NAME", "That Man");
             #endregion
 
             #region Passive

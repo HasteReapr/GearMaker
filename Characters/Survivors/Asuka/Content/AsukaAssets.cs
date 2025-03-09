@@ -122,6 +122,7 @@ namespace AsukaMod.Survivors.Asuka
         private static void CreateMetrons()
         {
             HowlingMetron = _assetBundle.LoadAsset<GameObject>("HowlingMetron");
+            HowlingMetron.GetComponent<ProjectileController>().ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("HowlingMetron_Ghost");
             var networkIdentity = HowlingMetron.GetComponent<NetworkIdentity>();
             if (networkIdentity)
             {
@@ -130,6 +131,7 @@ namespace AsukaMod.Survivors.Asuka
             Content.AddProjectilePrefab(HowlingMetron);
 
             DelayedHowlingMetron = _assetBundle.LoadAsset<GameObject>("DelayedHowlingMetron");
+            DelayedHowlingMetron.GetComponent<ProjectileController>().ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("DelayedHowling_Ghost");
             networkIdentity = DelayedHowlingMetron.GetComponent<NetworkIdentity>();
             if (networkIdentity)
             {
@@ -138,6 +140,7 @@ namespace AsukaMod.Survivors.Asuka
             Content.AddProjectilePrefab(DelayedHowlingMetron);
 
             HowlingMetronMSProcessing = _assetBundle.LoadAsset<GameObject>("HowlingMetronProcessing");
+            HowlingMetronMSProcessing.GetComponent<ProjectileController>().ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("HowlingProcess_Ghost");
             networkIdentity = HowlingMetronMSProcessing.GetComponent<NetworkIdentity>();
             if (networkIdentity)
             {
@@ -146,6 +149,7 @@ namespace AsukaMod.Survivors.Asuka
             Content.AddProjectilePrefab(HowlingMetronMSProcessing);
 
             MetronArpeggio = _assetBundle.LoadAsset<GameObject>("SpaceCube");
+            MetronArpeggio.GetComponent<ProjectileController>().ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("SpaceCube_Ghost");
             networkIdentity = MetronArpeggio.GetComponent<NetworkIdentity>();
             if (networkIdentity)
             {
@@ -154,6 +158,7 @@ namespace AsukaMod.Survivors.Asuka
             Content.AddProjectilePrefab(MetronArpeggio);
 
             DelayedTardusMetron = _assetBundle.LoadAsset<GameObject>("DelayedTardus");
+            DelayedTardusMetron.GetComponent<ProjectileController>().ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("DelayedTardus_Ghost");
             networkIdentity = DelayedTardusMetron.GetComponent<NetworkIdentity>();
             if (networkIdentity)
             {
@@ -162,6 +167,7 @@ namespace AsukaMod.Survivors.Asuka
             Content.AddProjectilePrefab(DelayedTardusMetron);
 
             BitShiftMetron = _assetBundle.LoadAsset<GameObject>("BitShiftMetron");
+            BitShiftMetron.GetComponent<ProjectileController>().ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("BitShiftMetron_Ghost");
             networkIdentity = BitShiftMetron.GetComponent<NetworkIdentity>();
             if (networkIdentity)
             {

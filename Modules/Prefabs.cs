@@ -807,6 +807,7 @@ namespace AsukaMod.Modules
             hitBoxGroup.groupName = hitBoxGroupName;
         }
 
+        public static void SetupHitbox(GameObject prefab, Transform hitboxTransform, string hitboxName) => SetupHitBoxGroup(prefab, hitboxName, hitboxTransform);
     }
 
     // for simplifying rendererinfo creation

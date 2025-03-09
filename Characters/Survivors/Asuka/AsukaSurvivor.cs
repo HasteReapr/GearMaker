@@ -135,6 +135,19 @@ namespace AsukaMod.Survivors.Asuka
         {
             //example of how to create a HitBoxGroup. see summary for more details
             Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
+
+            Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsA", "ScreamerHB");
+            Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsB", "TerraHB");
+            Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsC", "BoostHB");
+
+            ChildLocator childLocator = characterModelObject.GetComponent<ChildLocator>();
+
+            Transform screamerTransform = childLocator.FindChild("ScreamerHB");
+            Prefabs.SetupHitbox(prefabCharacterModel.gameObject, screamerTransform, "ScreamerHitbox");
+            Transform terraTransform = childLocator.FindChild("TerraHB");
+            Prefabs.SetupHitbox(prefabCharacterModel.gameObject, screamerTransform, "TerraHitbox");
+            Transform rmsTransform = childLocator.FindChild("BoostHB");
+            Prefabs.SetupHitbox(prefabCharacterModel.gameObject, screamerTransform, "RMSBoostHitbox");
         }
 
         public override void InitializeEntityStateMachines() 
@@ -491,6 +504,24 @@ namespace AsukaMod.Survivors.Asuka
                 mustKeyPress = false,
             });
             SpellSkills.Add("BitShiftMetron", bitShiftMetron);
+            SkillDef metronScreamer = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "MetronScreamer",
+                skillNameToken = Asuka_PREFIX + "SPELL_METRON_SCREAMER_NAME",
+                skillDescriptionToken = Asuka_PREFIX + "SPELL_METRON_SCREAMER_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("MetronScreamer808"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(MetronScreamer808)),
+                activationStateMachineName = "Weapon",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+
+                isCombatSkill = true,
+                mustKeyPress = false,
+            });
+            SpellSkills.Add("MetronScreamer", metronScreamer);
 
             SkillDef goToMarker = Skills.CreateSkillDef(new SkillDefInfo
             {
@@ -669,6 +700,9 @@ namespace AsukaMod.Survivors.Asuka
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, delayedTardusMetron);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, arpeggioMetron);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bitShiftMetron);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, metronScreamer);/*
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bitShiftMetron);
+            Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, bitShiftMetron);*/
 
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, goToMarker);
             Skills.AddSkillToFamily(passiveGenericSkill.skillFamily, sampler404);

@@ -16,6 +16,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public float ManaCost = 0;
         public bool CastFailed = false;
+        public bool canOverride = false;
         public AsukaManaComponent manaComp;
 
         private ExtraSkillLocator extraSkillLocator;
@@ -67,7 +68,8 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.PrioritySkill;
+            return canOverride ? InterruptPriority.Skill : InterruptPriority.Pain;
+            //return InterruptPriority.Pain;
         }
     }
 }

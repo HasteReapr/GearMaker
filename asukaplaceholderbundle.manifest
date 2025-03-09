@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 404231434
+CRC: 3485515327
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 447ad36e171c74b3df07a70cdd47351e
+    Hash: ec16a14a0571a82d0f136d5ba00fc55d
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 32409803e1ac0638bbded6ba49b24c38
+    Hash: ebf8c7522f0d123ea06b6b0975433e54
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -40,25 +40,33 @@ ClassTypes:
 - Class: 108
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 678291247, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
-- Class: 114
   Script: {fileID: 1790887305, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: 678291247, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 751bd37d2e55f5f448dbb0d97812d9ba, type: 3}
 - Class: 114
   Script: {fileID: -197296741, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
+  Script: {fileID: -226763392, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
   Script: {fileID: 298587437, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -1294804675, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
   Script: {fileID: -598719375, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
   Script: {fileID: -1848696948, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
   Script: {fileID: -270136354, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -899414464, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
   Script: {fileID: -1819008361, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
@@ -74,6 +82,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 261c50d8a80898e4ebf2e8e415ea6766, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
 - Class: 114
   Script: {fileID: 1395413934, guid: da77c7bbf69f66ab2145560542327715, type: 3}
@@ -84,6 +94,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 9a68da65c907acb4eb4dbcd042f172e7, type: 3}
 - Class: 115
+  Script: {instanceID: 0}
+- Class: 128
   Script: {instanceID: 0}
 - Class: 135
   Script: {instanceID: 0}
@@ -111,15 +123,39 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: Assembly-CSharp
   ClassName: ChildLocator/NameTransformPair
 - AssemblyName: RoR2
+  ClassName: ChildLocator/NameTransformPair
+- AssemblyName: RoR2
   ClassName: EntityStates.SerializableEntityStateType
 - AssemblyName: RoR2
   ClassName: RoR2.DamageTypeCombo
 - AssemblyName: RoR2
   ClassName: RoR2.SkillLocator/PassiveSkill
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.FaceInfo_Legacy
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.FontAssetCreationSettings
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.KerningTable
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_Character
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_FontFeatureTable
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_FontWeightPair
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.VertexGradient
 - AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.Events.PersistentCallGroup
 - AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.Events.UnityEvent
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.FaceInfo
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.Glyph
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.GlyphMetrics
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.GlyphRect
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
 - AssemblyName: com.unity.multiplayer-hlapi.Runtime
@@ -157,6 +193,7 @@ Assets:
 - Assets/HenryAssets/AsukaBundle/VFX/AsukaSwordSwingEffect.prefab
 - Assets/HenryAssets/AsukaBundle/VFX/Textures/texDust.png
 - Assets/HenryAssets/AsukaBundle/Mesh/meshAsuka.mesh
+- Assets/AsukaAssets/VFX/HowlingTrail.prefab
 - Assets/HenryAssets/AsukaBundle/VFX/Materials/matSwingEffect.mat
 - Assets/HenryAssets/AsukaBundle/Mesh/meshDanteCoat.mesh
 - Assets/HenryAssets/AsukaBundle/Animation/clips/DescendFast.anim
@@ -219,6 +256,7 @@ Assets:
 - Assets/HenryAssets/AsukaBundle/Animation/clips/AimYaw.anim
 - Assets/HenryAssets/AsukaBundle/Mesh/meshAsukaSword.mesh
 - Assets/HenryAssets/AsukaBundle/Icons/texDanteAchievement.png
+- Assets/AsukaAssets/Projectiles/GearStaff.prefab
 - Assets/AsukaAssets/Icons/DelayedTardusMetron.png
 - Assets/HenryAssets/AsukaBundle/Mesh/meshVergil.mesh
 - Assets/HenryAssets/AsukaBundle/Animation/clips/Descend.anim
@@ -248,6 +286,7 @@ Assets:
 - Assets/HenryAssets/AsukaBundle/Icons/texPistolIcon.png
 - Assets/HenryAssets/AsukaBundle/Icons/texPrimaryIcon.png
 - Assets/AsukaAssets/Icons/ChaoticOption.png
+- Assets/AsukaAssets/UI/Fonts/You Are Loved SDF.asset
 - Assets/HenryAssets/AsukaBundle/Icons/texPassiveIcon.png
 - Assets/HenryAssets/AsukaBundle/Materials/matAsukaAlt.mat
 - Assets/HenryAssets/AsukaBundle/AsukaDisplay.prefab

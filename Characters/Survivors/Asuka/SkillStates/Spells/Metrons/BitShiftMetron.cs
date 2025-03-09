@@ -33,6 +33,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
         private void Fire()
         {
             hasFired = true;
+            canOverride = true;
             if (isAuthority)
             {
                 //We gotta figure out how to check how many stocks we have

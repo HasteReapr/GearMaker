@@ -24,13 +24,25 @@ namespace AsukaMod.Survivors.Asuka.SkillStates
             base.FixedUpdate();
 
             if (extraInput.extraSkill1.justPressed)
+            {
                 manaComp.SelectedDeck = 0;
+                manaComp.deckBInd.gameObject.SetActive(false);
+                manaComp.deckCInd.gameObject.SetActive(false);
+            }
 
             if (extraInput.extraSkill2.justPressed)
+            {
                 manaComp.SelectedDeck = 1;
+                manaComp.deckBInd.gameObject.SetActive(true);
+                manaComp.deckCInd.gameObject.SetActive(false);
+            }
 
             if (extraInput.extraSkill3.justPressed)
+            {
                 manaComp.SelectedDeck = 2;
+                manaComp.deckBInd.gameObject.SetActive(false);
+                manaComp.deckCInd.gameObject.SetActive(true);
+            }
 
             if (!inputBank.skill3.down)
             {

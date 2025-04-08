@@ -1,0 +1,17 @@
+ManifestFileVersion: 0
+CRC: 4135587210
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: c20fd62272d783906e89b7fc54cfad27
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b0363f7088f9761414f730641bf9a24b
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Textures/stone02.png
+Dependencies: []

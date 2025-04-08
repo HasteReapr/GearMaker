@@ -20,11 +20,15 @@ namespace AsukaMod.Survivors.Asuka.Spells
         public override void OnEnter()
         {
             ManaCost = 24;
+            base.OnEnter();
+            if (CastFailed) return;
+            
             aimRay = GetAimRay();
             fireTime = 0.21f / attackSpeedStat;
             hasFired = false;
             duration = baseDuration / attackSpeedStat;
-            base.OnEnter();
+            PlayCrossfade("Gesture, Override", "CAST_SPIN", "CAST_SPIN.playbackRate", 1, 0.1f);
+            
         }
 
         private void Fire()
@@ -41,14 +45,11 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     position = aimRay.origin,
                     crit = characterBody.RollCrit(),
                     rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
-                    projectilePrefab = AsukaAssets.MetronArpeggio, //Somehow make a little portal that spawns the 5 cubes in a little array, otherwise just a shotgun
-                    speedOverride = 64,
+                    projectilePrefab = AsukaAssets.MetronArpeggio,
+                    //Spawn a projectile with 0 speed that stays still and spawns the 10 cubes.
+                    speedOverride = 0,
                 };
 
-                ProjectileManager.instance.FireProjectile(info);
-                info.rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, -3f, 0);
-                ProjectileManager.instance.FireProjectile(info);
-                info.rotation = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.Euler(0, 3f, 0);
                 ProjectileManager.instance.FireProjectile(info);
             }
         }

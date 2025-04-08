@@ -6,6 +6,7 @@ using RoR2.Projectile;
 using RoR2.UI;
 using UnityEngine.Networking;
 using R2API.Utils;
+using AsukaMod.Survivors.Asuka.Components;
 
 namespace AsukaMod.Survivors.Asuka
 {
@@ -128,6 +129,7 @@ namespace AsukaMod.Survivors.Asuka
             {
                 networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("0176acd452adc181"));
             }
+            HowlingMetron.AddComponent<CubeBehaviourComponent>();
             Content.AddProjectilePrefab(HowlingMetron);
 
             DelayedHowlingMetron = _assetBundle.LoadAsset<GameObject>("DelayedHowlingMetron");
@@ -137,6 +139,7 @@ namespace AsukaMod.Survivors.Asuka
             {
                 networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("0981acd452adc181"));
             }
+            DelayedHowlingMetron.AddComponent<CubeBehaviourComponent>();
             Content.AddProjectilePrefab(DelayedHowlingMetron);
 
             HowlingMetronMSProcessing = _assetBundle.LoadAsset<GameObject>("HowlingMetronProcessing");
@@ -146,6 +149,7 @@ namespace AsukaMod.Survivors.Asuka
             {
                 networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("0189acd452adc181"));
             }
+            HowlingMetronMSProcessing.AddComponent<CubeBehaviourComponent>();
             Content.AddProjectilePrefab(HowlingMetronMSProcessing);
 
             MetronArpeggio = _assetBundle.LoadAsset<GameObject>("SpaceCube");
@@ -155,6 +159,7 @@ namespace AsukaMod.Survivors.Asuka
             {
                 networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("9810acd452adc181"));
             }
+            MetronArpeggio.AddComponent<CubeBehaviourComponent>();
             Content.AddProjectilePrefab(MetronArpeggio);
 
             DelayedTardusMetron = _assetBundle.LoadAsset<GameObject>("DelayedTardus");
@@ -164,6 +169,7 @@ namespace AsukaMod.Survivors.Asuka
             {
                 networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("1980acd452adc181"));
             }
+            DelayedTardusMetron.AddComponent<CubeBehaviourComponent>();
             Content.AddProjectilePrefab(DelayedTardusMetron);
 
             BitShiftMetron = _assetBundle.LoadAsset<GameObject>("BitShiftMetron");
@@ -173,6 +179,7 @@ namespace AsukaMod.Survivors.Asuka
             {
                 networkIdentity.SetFieldValue("m_AssetId", NetworkHash128.Parse("7610acd452adc181"));
             }
+            BitShiftMetron.AddComponent<CubeBehaviourComponent>();
             Content.AddProjectilePrefab(BitShiftMetron);
         }
         #endregion projectiles

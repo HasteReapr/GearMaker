@@ -1,7 +1,84 @@
 ManifestFileVersion: 0
-CRC: 697972948
+CRC: 3053799721
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: asukaplaceholderbundle
+      Dependencies:
+        Dependency_0: fx_mesh.unity3d
+        Dependency_1: fx_textures_noise.unity3d
+        Dependency_2: fx_textures_aura.unity3d
+        Dependency_3: builtin_builtin_shader.unity3d
+        Dependency_4: builtin_builtin_materials.unity3d
+        Dependency_5: fx_textures_ring_materials.unity3d
+        Dependency_6: fx_textures_gradient.unity3d
+    Info_1:
+      Name: fx_textures_ground.unity3d
+      Dependencies: {}
+    Info_2:
+      Name: fx_mesh.unity3d
+      Dependencies: {}
+    Info_3:
+      Name: fx_textures_aura_materials.unity3d
+      Dependencies:
+        Dependency_0: fx_textures_aura.unity3d
+    Info_4:
+      Name: fx_textures_particle.unity3d
+      Dependencies: {}
+    Info_5:
+      Name: fx_textures_noise.unity3d
+      Dependencies: {}
+    Info_6:
+      Name: fx_textures_particle_materials.unity3d
+      Dependencies:
+        Dependency_0: fx_textures_particle.unity3d
+    Info_7:
+      Name: fx_textures_flare_materials.unity3d
+      Dependencies:
+        Dependency_0: fx_textures_flare.unity3d
+    Info_8:
+      Name: fx_textures_flare.unity3d
+      Dependencies: {}
+    Info_9:
+      Name: fx_textures_glow_materials.unity3d
+      Dependencies:
+        Dependency_0: fx_textures_flare.unity3d
+        Dependency_1: fx_textures_glow.unity3d
+    Info_10:
+      Name: fx_textures_aura.unity3d
+      Dependencies: {}
+    Info_11:
+      Name: fx_textures_dust_materials.unity3d
+      Dependencies:
+        Dependency_0: fx_textures_dust.unity3d
+    Info_12:
+      Name: fx_textures_dust.unity3d
+      Dependencies: {}
+    Info_13:
+      Name: builtin_builtin_shader.unity3d
+      Dependencies: {}
+    Info_14:
+      Name: builtin_builtin_materials.unity3d
+      Dependencies:
+        Dependency_0: builtin_builtin_images.unity3d
+    Info_15:
+      Name: builtin_builtin_images.unity3d
+      Dependencies: {}
+    Info_16:
+      Name: fx_textures_ring_materials.unity3d
+      Dependencies:
+        Dependency_0: fx_textures_shock.unity3d
+    Info_17:
+      Name: fx_textures_ground_materials.unity3d
+      Dependencies:
+        Dependency_0: fx_textures_ground.unity3d
+        Dependency_1: builtin_builtin_shader.unity3d
+    Info_18:
+      Name: fx_textures_shock.unity3d
+      Dependencies: {}
+    Info_19:
+      Name: fx_textures_glow.unity3d
+      Dependencies: {}
+    Info_20:
+      Name: fx_textures_gradient.unity3d
       Dependencies: {}

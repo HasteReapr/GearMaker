@@ -29,10 +29,14 @@ namespace AsukaMod.Survivors.Asuka.Spells
             ManaCost = 8;
             base.OnEnter();
 
+            if (CastFailed) return;
+
             if (!CastFailed)
             {
                 aimRay = GetAimRay();
                 duration = baseDuration / moveSpeedStat;
+
+                PlayCrossfade("Gesture, Override", "CAST_HOVER", "CAST_HOVER.playbackRate", duration, 0.1f);
 
                 modelTransform = GetModelTransform();
                 if (modelTransform)
@@ -58,6 +62,8 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
         public override void OnExit()
         {
+            base.OnExit();
+
             if (characterModel)
             {
                 characterModel.invisibilityCount--;
@@ -77,8 +83,12 @@ namespace AsukaMod.Survivors.Asuka.Spells
 
             if (!CastFailed)
             {
-                manaComp.DiscardFromHand(activatorSkillSlot);
-                if (HasBuff(AsukaBuffs.bookmarkAuto))
+                if (HasBuff(AsukaBuffs.recycleBuff))
+                    characterBody.RemoveBuff(AsukaBuffs.recycleBuff);
+                else
+                    manaComp.DiscardFromHand(activatorSkillSlot);
+
+                if (HasBuff(AsukaBuffs.bookmarkAuto) && !HasBuff(AsukaBuffs.recycleBuff))
                     manaComp.DrawIntoHand(activatorSkillSlot);
             }
         }

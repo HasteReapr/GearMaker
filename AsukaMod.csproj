@@ -42,10 +42,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Characters\Survivors\Asuka\SkillStates\Spells\Staves\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Reference Include="ExtraSkillSlots">
 	    <HintPath>lib\ExtraSkillSlots.dll</HintPath>
 	  </Reference>

@@ -20,11 +20,15 @@ namespace AsukaMod.Survivors.Asuka.Spells
         public override void OnEnter()
         {
             ManaCost = 16;
+            base.OnEnter();
+            if (CastFailed) return;
+
             aimRay = GetAimRay();
             fireTime = 0.21f / attackSpeedStat;
             hasFired = false;
             duration = baseDuration / attackSpeedStat;
-            base.OnEnter();
+
+            PlayCrossfade("Gesture, Override", "CAST_SPIN", "CAST_SPIN.playbackRate", 1, 0.1f);
         }
 
         private void Fire()

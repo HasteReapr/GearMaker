@@ -21,22 +21,25 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             //Set our mana cost before we call base.OnEnter so if the mana cost is more than our current mana, we go into the failed cast state.
             ManaCost = 16;
+            base.OnEnter();
+            if (CastFailed) return;
 
             aimRay = GetAimRay();
             fireTime = 0.21f / attackSpeedStat;
             hasFired = false;
             duration = baseDuration / attackSpeedStat;
-
-            base.OnEnter();
+            
+            PlayCrossfade("Gesture, Override", "CAST_SLASH", "CAST_SLASH.playbackRate", 1, 0.1f);
         }
 
         private void Fire()
         {
             hasFired = true;
             canOverride = true;
+            //Instead of *actually* firing we send this to a queue that gets fired.
+            
             if (isAuthority)
             {
-                //We gotta figure out how to check how many stocks we have
                 FireProjectileInfo info = new FireProjectileInfo()
                 {
                     owner = gameObject,
@@ -49,7 +52,8 @@ namespace AsukaMod.Survivors.Asuka.Spells
                     speedOverride = 64,
                 };
 
-                ProjectileManager.instance.FireProjectile(info);
+                Chat.AddMessage($"Sent bitshift info with a count of {activatorSkillSlot.stock}");
+                manaComp.AddBitShift(activatorSkillSlot.stock + 1, info);
             }
         }
 

@@ -12,7 +12,9 @@ namespace AsukaMod.Survivors.Asuka.Spells
     {
         public override void OnEnter()
         {
+            ManaCost = 16;
             base.OnEnter();
+            if (CastFailed) return;
 
             hitboxGroupName = "ScreamerHitbox";
 
@@ -31,11 +33,6 @@ namespace AsukaMod.Survivors.Asuka.Spells
             hitStopDuration = 0.012f;
             attackRecoil = 0f;
             hitHopVelocity = 0f;
-
-            /*swingSoundString = "HenrySwordSwing";
-            hitSoundString = "";
-            muzzleString = swingIndex % 2 == 0 ? "SwingLeft" : "SwingRight";
-            playbackRateParam = "Slash.playbackRate";*/
         }
     }
 }

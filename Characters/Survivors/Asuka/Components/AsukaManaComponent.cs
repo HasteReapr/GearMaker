@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using TMPro;
+using RoR2.Projectile;
 
 namespace AsukaMod.Survivors.Asuka.Components
 {
@@ -33,6 +35,10 @@ namespace AsukaMod.Survivors.Asuka.Components
             HEAVY = 3
         }
 
+        //This list contains information about cubes. This is just held here for Staves to communicate to cubes.
+        private List<CubeInfo> cubeList;
+        private List<BitShiftInfo> bitList;
+
         //Decks, these get initialized in a minute.
         public SkillDef emptySpell = AsukaSurvivor.emptySpell;
 
@@ -53,29 +59,34 @@ namespace AsukaMod.Survivors.Asuka.Components
         //Mana information
         public float minMana = 0;
         public float maxMana = 100;
-        public float passiveManaRegen = 1f;
-        public float mpsWhileRegen = 15f;
-        public float mpsRecoverContinous = 24f; // Recover Mana Continous buff.
+        public float passiveManaRegen = 0.25f;
+        public float manaStunRegen = 5f;
+        public float mpsWhileRegen = 30f;
+        public float mpsRecoverContinous = 15f; // Recover Mana Continous buff.
         public float manaGainedInstant = 30; // Recover Mana Instant. Doesn't consume cards, and just recovers your mana.
         public float manaGainedOnKill = 2f;
-        public float manaLostOnHitMult = 0.125f; //this is a multiplier for the damage, incoming damage gets multiplied by this and this is how much mana you lose. So if you took 10 damage you lose 1 mana.
+        public float manaLostOnHitMult = 0.75f; //this is a multiplier for the damage, incoming damage gets multiplied by this and this is how much mana you lose.
+        public bool inManaStun = false; // This is an indicator for when you're in the mana recovery state, this gets triggered when you take damage and are low on mana, and the damage you take makes you go into <=0 mana.
 
         //Mana UI Stuff
         public GameObject manaBarUI;
         public string cardOverlayChildLocStr;
         private OverlayController manaOverlayCTRL;
         private List<ImageFillController> fillUiList = new List<ImageFillController>();
+        //private List<TextMesh> uiCountList = new List<TextMesh>();
+        private TextMeshProUGUI[] uiCountList;
 
         private ChildLocator uiChildLoc;
-        private HGTextMeshProUGUI uiCardCount;
-        private HGTextMeshProUGUI uiCardCountOutline;
         public Transform deckBInd;
         public Transform deckCInd;
+        public Transform starInd;
+        public Transform samplerInd;
 
         //Real Mana Values
         [SyncVar(hook = "OnManaModified")]
         private float _mana;
 
+        #region Values
         public float mana
         {
             get
@@ -134,6 +145,7 @@ namespace AsukaMod.Survivors.Asuka.Components
                 SetSyncVar<float>(value, ref _mana, 1U);
             }
         }
+        #endregion Values
 
         [Server]
         public void AddMana(float amount)
@@ -188,15 +200,20 @@ namespace AsukaMod.Survivors.Asuka.Components
 
             deckBInd = uiChildLoc.FindChild("IndicatorB");
             deckCInd = uiChildLoc.FindChild("IndicatorC");
+            starInd = uiChildLoc.FindChild("DeckStar");
+            samplerInd = uiChildLoc.FindChild("SamplerSymbol");
 
-            //uiCardCount = instance.GetComponentInChildren<HGTextMeshProUGUI>();
-            uiCardCount = uiChildLoc.FindChildComponent<HGTextMeshProUGUI>("Count");
-            uiCardCountOutline = uiChildLoc.FindChildComponent<HGTextMeshProUGUI>("CountOutline");
+            uiCountList = instance.GetComponentsInChildren<TextMeshProUGUI>();
         }
 
         private void OnManaOverlayRemoved(OverlayController controller, GameObject instance)
         {
             fillUiList.Remove(instance.GetComponent<ImageFillController>());
+        }
+
+        public void Awake()
+        {
+            cubeList = new List<CubeInfo>();
         }
 
         public void Start()
@@ -227,11 +244,25 @@ namespace AsukaMod.Survivors.Asuka.Components
 
         public void FixedUpdate()
         {
-            if (charBody.HasBuff(AsukaBuffs.manaRegenCont))
+            if (charBody.HasBuff(AsukaBuffs.manaRegenCont)) // If we have the Recover Mana Continous buff we add that amount of mana
             {
                 AddMana(mpsRecoverContinous * Time.fixedDeltaTime);
             }
-            AddMana(passiveManaRegen * Time.fixedDeltaTime);
+
+            if (inManaStun) // If we arent in lost mana penalty we passively recover a little bit of mana, otherwise we quickly recharge the bar
+            {
+                AddMana(manaStunRegen * Time.fixedDeltaTime);
+                //Once we get back to full we wanna get out of mana stun and we get the defense buff back
+                if(mana >= maxMana)
+                {
+                    inManaStun = false;
+                    charBody.AddBuff(AsukaBuffs.manaDefBuff);
+                }
+            }
+            else
+            {
+                AddMana(passiveManaRegen * Time.fixedDeltaTime);
+            }
 
             foreach (ImageFillController imageFillController in fillUiList)
             {
@@ -244,19 +275,21 @@ namespace AsukaMod.Survivors.Asuka.Components
                 hurtTimer2 -= Time.deltaTime;
             }
 
-            hurtHold = Mathf.Lerp(hurtHold, _mana, hurtTimer2);
+            samplerInd.gameObject.SetActive(charBody.HasBuff(AsukaBuffs.recycleBuff));            
 
-            if (uiCardCount)
+            foreach(TextMeshProUGUI textUI in uiCountList)
             {
                 StringBuilder stringBuilder = HG.StringBuilderPool.RentStringBuilder();
                 stringBuilder.AppendInt(30 - GetDrawCountByIndex(SelectedDeck).Count, 1U, 3U);
-                Log.Message("Cards remaining : " + stringBuilder);
-                uiCardCount.SetText(stringBuilder);
-                uiCardCountOutline.SetText(stringBuilder);
+                
+                textUI.SetText(stringBuilder);
+
                 HG.StringBuilderPool.ReturnStringBuilder(stringBuilder);
             }
 
-            //Log.Message($"Mana {mana}");
+            ClearNullCubes();
+            CleanupBitShift();
+            UpdateBitShift();
         }
 
 
@@ -385,9 +418,12 @@ namespace AsukaMod.Survivors.Asuka.Components
         public void TryDrawDiscard(GenericSkill hand)
         {
             //We try to draw into our hand, but if the hand is not empty it will return.
-            if (DrawIntoHand(hand, 0)) { return; }
+            if (DrawIntoHand(hand, 0)) {
+                //We spawn the draw effect here
+                return;
+            }
 
-            //If this fails we discard.
+            //If this fails we discard, and spawn the discard effect.
             DiscardFromHand(hand);
         }
 
@@ -436,6 +472,38 @@ namespace AsukaMod.Survivors.Asuka.Components
                 default:
                     return null;
             }
+        }
+
+        private void ClearNullCubes()
+        {
+            cubeList.RemoveAll(item => item.gameObj == null);
+        }
+
+        private void CleanupBitShift()
+        {
+            bitList.RemoveAll(item => item.nullable == true);
+        }
+
+        private void UpdateBitShift()
+        {
+            foreach(BitShiftInfo info in bitList)
+            {
+                info.Update();
+            }
+        }
+
+        public void AddCube(GameObject cube)
+        {
+            CubeInfo info = new CubeInfo(cube, cube.GetComponent<CubeBehaviourComponent>());
+
+            cubeList.Add(info);
+        }
+
+        public void AddBitShift(int count, FireProjectileInfo info)
+        {
+            BitShiftInfo bit = new BitShiftInfo(count, info);
+
+            bitList.Add(bit);
         }
 
         //Here at the very bottom we fill out all of the decks with our cards
@@ -508,6 +576,46 @@ namespace AsukaMod.Survivors.Asuka.Components
             chaoticDeck.Add(AsukaSurvivor.SpellSkills.GetValueOrDefault("MetronArpeggio"));
             //Terra and Accipiter too I just haven't made those spells yet
             //Terra, 808 and Aquila will be big melee hitboxes, while Accipiter is a special case
+        }
+    }
+
+    internal class CubeInfo
+    {
+        internal GameObject gameObj;
+        internal CubeBehaviourComponent cubeBehaviour;
+
+        internal CubeInfo(GameObject gameObj, CubeBehaviourComponent cubeBehaviour)
+        {
+            this.gameObj = gameObj;
+            this.cubeBehaviour = cubeBehaviour;
+        }
+    }
+
+    public class BitShiftInfo
+    {
+        public float timer;
+        public FireProjectileInfo fireProjectile;
+        public int count;
+        private float interval = 0.1f;
+        public bool nullable = false;
+
+        public BitShiftInfo(int count, FireProjectileInfo fireProjectile)
+        {
+            this.count = count;
+            Chat.AddMessage($"Bitshift created with a count of {count}");
+            this.fireProjectile = fireProjectile;
+        }
+
+        public void Update()
+        {
+            timer += Time.deltaTime;
+            Chat.AddMessage($"Current Timer {timer}");
+            if (timer % interval == 0)
+            {
+                Chat.AddMessage("We are attempting to fire a bitshift");
+                ProjectileManager.instance.FireProjectile(fireProjectile);
+                count--;
+            }
         }
     }
 }

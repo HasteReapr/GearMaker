@@ -11,12 +11,17 @@ namespace AsukaMod.Survivors.Asuka.SkillStates
     {
         AsukaManaComponent manaComp;
         ExtraInputBankTest extraInput;
+        
+
+        float fadeoutTimer;
+        float fadeReset = 1/0.12f;
 
         public override void OnEnter()
         {
             base.OnEnter();
             manaComp = GetComponent<AsukaManaComponent>();
             extraInput = outer.GetComponent<ExtraInputBankTest>();
+            manaComp.starInd.gameObject.SetActive(true);
         }
 
         public override void FixedUpdate()
@@ -28,6 +33,8 @@ namespace AsukaMod.Survivors.Asuka.SkillStates
                 manaComp.SelectedDeck = 0;
                 manaComp.deckBInd.gameObject.SetActive(false);
                 manaComp.deckCInd.gameObject.SetActive(false);
+
+                PlayCrossfade("Gesture, Override", "DRAW_CARD", "DRAW_CARD.playbackRate", 1, 0.1f);
             }
 
             if (extraInput.extraSkill2.justPressed)
@@ -35,6 +42,8 @@ namespace AsukaMod.Survivors.Asuka.SkillStates
                 manaComp.SelectedDeck = 1;
                 manaComp.deckBInd.gameObject.SetActive(true);
                 manaComp.deckCInd.gameObject.SetActive(false);
+
+                PlayCrossfade("Gesture, Override", "DRAW_CARD", "DRAW_CARD.playbackRate", 1, 0.1f);
             }
 
             if (extraInput.extraSkill3.justPressed)
@@ -42,12 +51,20 @@ namespace AsukaMod.Survivors.Asuka.SkillStates
                 manaComp.SelectedDeck = 2;
                 manaComp.deckBInd.gameObject.SetActive(false);
                 manaComp.deckCInd.gameObject.SetActive(true);
+
+                PlayCrossfade("Gesture, Override", "DRAW_CARD", "DRAW_CARD.playbackRate", 1, 0.1f);
             }
 
             if (!inputBank.skill3.down)
             {
                 outer.SetNextStateToMain();
             }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            manaComp.starInd.gameObject.SetActive(false);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

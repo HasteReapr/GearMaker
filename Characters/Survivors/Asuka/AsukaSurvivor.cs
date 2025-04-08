@@ -62,17 +62,14 @@ namespace AsukaMod.Survivors.Asuka
         {
                 new CustomRendererInfo
                 {
-                    childName = "SwordModel",
-                    material = assetBundle.LoadMaterial("matAsuka"),
+                    childName = "Body",
+                    material = assetBundle.LoadMaterial("GearMaker"),
                 },
                 new CustomRendererInfo
                 {
-                    childName = "GunModel",
+                    childName = "Book",
+                    material = assetBundle.LoadMaterial("Tome"),
                 },
-                new CustomRendererInfo
-                {
-                    childName = "Model",
-                }
         };
 
         public override UnlockableDef characterUnlockableDef => AsukaUnlockables.characterUnlockableDef;
@@ -134,20 +131,18 @@ namespace AsukaMod.Survivors.Asuka
         public void AddHitboxes()
         {
             //example of how to create a HitBoxGroup. see summary for more details
-            Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
-
-            Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsA", "ScreamerHB");
+            /*Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsA", "ScreamerHB");
             Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsB", "TerraHB");
-            Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsC", "BoostHB");
+            Prefabs.SetupHitBoxGroup(characterModelObject, "SpellsC", "BoostHB");*/
 
             ChildLocator childLocator = characterModelObject.GetComponent<ChildLocator>();
 
             Transform screamerTransform = childLocator.FindChild("ScreamerHB");
             Prefabs.SetupHitbox(prefabCharacterModel.gameObject, screamerTransform, "ScreamerHitbox");
-            Transform terraTransform = childLocator.FindChild("TerraHB");
-            Prefabs.SetupHitbox(prefabCharacterModel.gameObject, screamerTransform, "TerraHitbox");
+            /*Transform terraTransform = childLocator.FindChild("TerraHB");
+            Prefabs.SetupHitbox(prefabCharacterModel.gameObject, terraTransform, "TerraHitbox");
             Transform rmsTransform = childLocator.FindChild("BoostHB");
-            Prefabs.SetupHitbox(prefabCharacterModel.gameObject, screamerTransform, "RMSBoostHitbox");
+            Prefabs.SetupHitbox(prefabCharacterModel.gameObject, rmsTransform, "RMSBoostHitbox");*/
         }
 
         public override void InitializeEntityStateMachines() 
@@ -498,7 +493,7 @@ namespace AsukaMod.Survivors.Asuka
                 fullRestockOnAssign = false,
                 requiredStock = 0,
                 baseMaxStock = 4,
-                baseRechargeInterval = 5f,
+                baseRechargeInterval = 2f,
 
                 isCombatSkill = true,
                 mustKeyPress = false,

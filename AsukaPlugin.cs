@@ -62,6 +62,19 @@ namespace AsukaMod
                 damageInfo.damage *= 0.25f; //With mana up, Asuka's effective health is 60*4.
             }
 
+            if(self.TryGetComponent(out AsukaManaComponent passiveCtrl)) //If we are Askua we need to get our mana component and reduce mana.
+            {
+                if (!passiveCtrl.inManaStun)
+                {
+                    if(passiveCtrl.mana - (damageInfo.damage * passiveCtrl.manaLostOnHitMult) <= 0)
+                    {
+                        passiveCtrl.inManaStun = true;
+                        self.body.RemoveBuff(AsukaBuffs.manaDefBuff);
+                    }
+                    passiveCtrl.AddMana((damageInfo.damage * passiveCtrl.manaLostOnHitMult) * -1);
+                }
+            }
+
             orig(self, damageInfo);
         }
     }

@@ -22,7 +22,11 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             ManaCost = 4;
             base.OnEnter();
+            if (CastFailed) return;
+
             duration = baseDuration / attackSpeedStat;
+
+            PlayCrossfade("Gesture, Override", "CAST_SPIN", "CAST_SPIN.playbackRate", duration, 0.1f);
 
             manaComp = GetComponent<AsukaManaComponent>();
             extraSkills = outer.GetComponent<ExtraSkillLocator>();
@@ -44,11 +48,6 @@ namespace AsukaMod.Survivors.Asuka.Spells
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override void OnExit()
-        {
-            
         }
     }
 }

@@ -18,11 +18,15 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             ManaCost = 4;
             base.OnEnter();
+            if (CastFailed) return;
+
             duration = baseDuration / attackSpeedStat;
             if (isAuthority)
             {
                 characterBody.GetComponent<AsukaManaComponent>().AddMana(25);
             }
+
+            PlayCrossfade("Gesture, Override", "CAST_SPIN", "CAST_SPIN.playbackRate", duration, 0.1f);
         }
 
         public override void FixedUpdate()

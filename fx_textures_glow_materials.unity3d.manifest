@@ -1,0 +1,26 @@
+ManifestFileVersion: 0
+CRC: 3954348102
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 82ea33c58294e9bf318e905bff719df5
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f9f3d136959ac0e7043e721e899342fb
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Materials/glow_ball3_blue_12.mat
+- Assets/AsukaAssets/FX_WindSkill/Materials/alpha_point 3.mat
+- Assets/AsukaAssets/FX_WindSkill/Materials/glowa_ball_grey_4.mat
+- Assets/AsukaAssets/FX_WindSkill/Materials/Light_Add.mat
+Dependencies:
+- C:/Users/Bee_Snow/source/repos/AsukaMod/AsukaMod/fx_textures_flare.unity3d
+- C:/Users/Bee_Snow/source/repos/AsukaMod/AsukaMod/fx_textures_glow.unity3d

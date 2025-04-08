@@ -1,0 +1,24 @@
+ManifestFileVersion: 0
+CRC: 1796092592
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 4486d35c1070ff016d2759b9340711a6
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f9f3d136959ac0e7043e721e899342fb
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Materials/dust10.mat
+- Assets/AsukaAssets/FX_WindSkill/Materials/FX_smoke_02.mat
+- Assets/AsukaAssets/FX_WindSkill/Materials/dust51_2.mat
+Dependencies:
+- C:/Users/Bee_Snow/source/repos/AsukaMod/AsukaMod/fx_textures_dust.unity3d

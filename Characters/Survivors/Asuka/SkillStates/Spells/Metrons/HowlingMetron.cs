@@ -21,13 +21,15 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             //Set our mana cost before we call base.OnEnter so if the mana cost is more than our current mana, we go into the failed cast state.
             ManaCost = 8;
+            base.OnEnter();
+            if (CastFailed) return;
 
             aimRay = GetAimRay();
             hasFired = false;
             fireTime = 0.11f / attackSpeedStat;
-            duration = baseDuration / attackSpeedStat;
+            duration = baseDuration / attackSpeedStat;           
 
-            base.OnEnter();
+            PlayCrossfade("Gesture, Override", "CAST_SLASH", "CAST_SLASH.playbackRate", 1, 0.1f);
         }
 
         private void Fire()

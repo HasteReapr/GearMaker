@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 176622686
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 165ef4ba248df6965aa99b2e24179767
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b0363f7088f9761414f730641bf9a24b
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Textures/flare02_blue.png
+- Assets/AsukaAssets/FX_WindSkill/Textures/Light.PNG
+- Assets/AsukaAssets/FX_WindSkill/Textures/bl_02-3.png
+Dependencies: []

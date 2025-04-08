@@ -1,0 +1,17 @@
+ManifestFileVersion: 0
+CRC: 1120335086
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0f7300bad56151e336c5419416f61487
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b0363f7088f9761414f730641bf9a24b
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Textures/Spark.PNG
+Dependencies: []

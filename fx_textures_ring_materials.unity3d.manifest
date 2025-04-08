@@ -1,0 +1,22 @@
+ManifestFileVersion: 0
+CRC: 590497193
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: fbb2945ec8ee2f5f4f01de8c42c1b600
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f9f3d136959ac0e7043e721e899342fb
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Materials/shock_blue.mat
+Dependencies:
+- C:/Users/Bee_Snow/source/repos/AsukaMod/AsukaMod/fx_textures_shock.unity3d

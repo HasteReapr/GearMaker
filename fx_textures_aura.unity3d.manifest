@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 3522764350
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: c3fd508405f4717bb6040d074ea7f2f7
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b0363f7088f9761414f730641bf9a24b
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Textures/eye_fxl_smkoe_012_1.png
+- Assets/AsukaAssets/FX_WindSkill/Textures/Blood_Splat.png
+- Assets/AsukaAssets/FX_WindSkill/Textures/lms-g51c_1.png
+Dependencies: []

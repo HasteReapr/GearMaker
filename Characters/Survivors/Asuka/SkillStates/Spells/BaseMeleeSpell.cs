@@ -53,6 +53,7 @@ namespace AsukaMod.Survivors.Asuka.Spells
         public override void OnEnter()
         {
             base.OnEnter();
+            if (CastFailed) return;
 
             duration = baseDuration / attackSpeedStat;
             animator = GetModelAnimator();

@@ -28,18 +28,22 @@ namespace AsukaMod.Survivors.Asuka.SkillStates
             if (extraBank.extraSkill1.justPressed)
             {
                 manaComp.TryDrawDiscard(extraSkills.extraFirst);
+                PlayCrossfade("Gesture, Override", "DRAW_CARD", "DRAW_CARD.playbackRate", 1, 0.1f);
             }
             if (extraBank.extraSkill2.justPressed)
             {
                 manaComp.TryDrawDiscard(extraSkills.extraSecond);
+                PlayCrossfade("Gesture, Override", "DRAW_CARD", "DRAW_CARD.playbackRate", 1, 0.1f);
             }
             if (extraBank.extraSkill3.justPressed)
             {
                 manaComp.TryDrawDiscard(extraSkills.extraThird);
+                PlayCrossfade("Gesture, Override", "DRAW_CARD", "DRAW_CARD.playbackRate", 1, 0.1f);
             }
             if (extraBank.extraSkill4.justPressed)
             {
                 manaComp.TryDrawDiscard(extraSkills.extraFourth);
+                PlayCrossfade("Gesture, Override", "DRAW_CARD", "DRAW_CARD.playbackRate", 1, 0.1f);
             }
 
             if (!inputBank.skill2.down)

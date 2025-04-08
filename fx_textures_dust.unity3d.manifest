@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 4271442093
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: cfa5674c4ac5f3298c0049309ad565aa
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b0363f7088f9761414f730641bf9a24b
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Textures/dust51.png
+- Assets/AsukaAssets/FX_WindSkill/Textures/FX_smoke_02.png
+- Assets/AsukaAssets/FX_WindSkill/Textures/dust09.png
+Dependencies: []

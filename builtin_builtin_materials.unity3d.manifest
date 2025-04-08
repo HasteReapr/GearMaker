@@ -1,0 +1,22 @@
+ManifestFileVersion: 0
+CRC: 2778188210
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 193cab4f6bc0db82c22fa9c93b6bb38c
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f9f3d136959ac0e7043e721e899342fb
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AsukaAssets/FX_WindSkill/Materials/Default-Particle.mat
+Dependencies:
+- C:/Users/Bee_Snow/source/repos/AsukaMod/AsukaMod/builtin_builtin_images.unity3d

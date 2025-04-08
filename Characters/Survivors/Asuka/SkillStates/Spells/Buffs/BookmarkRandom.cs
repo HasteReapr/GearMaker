@@ -22,6 +22,8 @@ namespace AsukaMod.Survivors.Asuka.Spells
         {
             ManaCost = 6;
             base.OnEnter();
+            if (CastFailed) return;
+
             duration = baseDuration / attackSpeedStat;
 
             manaComp = GetComponent<AsukaManaComponent>();
@@ -36,6 +38,12 @@ namespace AsukaMod.Survivors.Asuka.Spells
             manaComp.DrawIntoHand(extraSkills.extraSecond);
             manaComp.DrawIntoHand(extraSkills.extraThird);
             manaComp.DrawIntoHand(extraSkills.extraFourth);
+
+            //PlayAnimation("Gesture, Override", "CAST_SPIN", "CAST_SPIN.playbackRate", 1.39f);
+            Animator animator = GetModelAnimator();
+            GetModelAnimator().SetFloat("CAST_SPIN.playbackRate", attackSpeedStat);
+
+            PlayCrossfade("Gesture, Override", "CAST_SPIN", "CAST_SPIN.playbackRate", duration, 0.1f);
         }
 
         public override void FixedUpdate()
@@ -47,11 +55,6 @@ namespace AsukaMod.Survivors.Asuka.Spells
                 outer.SetNextStateToMain();
                 return;
             }
-        }
-
-        public override void OnExit()
-        {
-            
         }
     }
 }
